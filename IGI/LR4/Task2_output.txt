@@ -1,0 +1,13 @@
+Number of sentences in the text: 8
+Number of narrative sentences: 4
+Number of interrogative sentences: 2
+Number of imperative sentences: 1
+Average sentence length in characters: 48.62
+Average word length in characters: 4.36
+Number of smileys in the text: 2
+Sentences with spaces, numbers, and symbols: ['Taxi services have become an essential part of modern life. People zoo use taxis to travel quickly and comfortably across cities.', ' Drivers are equipped with GPS devices to find the shortest routes. Some taxi companies offer discounts on weekends and holidays.', ' What makes a good taxi service? Is it speed, comfort, or price?', ' Book a ride now!']
+Number of uppercase letters: 16
+Number of lowercase letters: 270
+First word containing 'z': zoo, position: 12
+Text without words starting with 'a': Taxi services have become  essential part of modern life. People zoo use taxis to travel quickly  comfortably  cities. Drivers  equipped with GPS devices to find the shortest routes. Some taxi companies offer discounts on weekends  holidays. What makes  good taxi service? Is it speed, comfort, or price? Book  ride now! ;--))) ;-) -- ]]  bC cD аБ бВ вГ  12/12/900 12/12/9000
+All valid date: ['12/12/9000']
