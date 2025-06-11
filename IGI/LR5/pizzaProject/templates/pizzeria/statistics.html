@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load shop_extras %}
+
+{% block title %}Статистика - Пиццерия{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Статистика</h1>
+
+    <!-- Общая статистика -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Общая статистика продаж</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="stats-card text-center">
+                                <h3>{{ total_sales|floatformat:2 }} Br</h3>
+                                <p>Общая сумма продаж</p>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Показатель</th>
+                                            <th>Значение</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Среднее значение заказа</td>
+                                            <td>{{ sales_stats.average|floatformat:2 }} Br</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Медиана заказов</td>
+                                            <td>{{ sales_stats.median|floatformat:2 }} Br</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Мода заказов</td>
+                                            <td>{{ sales_stats.mode|floatformat:2 }} Br</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Статистика по возрасту клиентов -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Статистика по возрасту клиентов</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Показатель</th>
+                                    <th>Значение</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Средний возраст</td>
+                                    <td>{{ age_stats.average|floatformat:1 }} лет</td>
+                                </tr>
+                                <tr>
+                                    <td>Медианный возраст</td>
+                                    <td>{{ age_stats.median|floatformat:1 }} лет</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Популярность и прибыльность категорий пицц -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Статистика по категориям пицц</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Категория</th>
+                                    <th>Количество заказов</th>
+                                    <th>Общая выручка</th>
+                                    <th>Средний чек</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category in pizza_categories %}
+                                <tr>
+                                    <td>{{ category.name }}</td>
+                                    <td>{{ category.total_orders }}</td>
+                                    <td>{{ category.total_revenue|default:0|floatformat:2 }} Br</td>
+                                    <td>
+                                        {% if category.total_orders %}
+                                            {{ category.total_revenue|default:0|floatformat:2|div:category.total_orders }} Br
+                                        {% else %}
+                                            0 Br
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Список клиентов -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Список клиентов</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Имя</th>
+                                    <th>Email</th>
+                                    <th>Телефон</th>
+                                    <th>Количество заказов</th>
+                                    <th>Общая сумма</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for customer in customers %}
+                                <tr>
+                                    <td>{{ customer.user.get_full_name }}</td>
+                                    <td>{{ customer.user.email }}</td>
+                                    <td>{{ customer.phone_number }}</td>
+                                    <td>{{ customer.orders_count }}</td>
+                                    <td>{{ customer.total_spent|default:0|floatformat:2 }} Br</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+.stats-card {
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    margin-bottom: 20px;
+}
+
+.stats-card h3 {
+    font-size: 24px;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.stats-card p {
+    color: #7f8c8d;
+    margin: 0;
+}
+
+.table th {
+    background-color: #f8f9fa;
+}
+</style>
+{% endblock %}
+
+{% endblock %} 

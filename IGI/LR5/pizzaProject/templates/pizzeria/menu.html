@@ -1,0 +1,142 @@
+{% extends 'pizzeria/base.html' %}
+{% load static %}
+
+{% block title %}Меню - Пиццерия{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Фильтры -->
+    <div class="filters-section mb-4">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label for="category" class="form-label">Категория</label>
+                <select name="category" id="category" class="form-select">
+                    <option value="">Все категории</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}" {% if selected_category == category.id %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="sort" class="form-label">Сортировка</label>
+                <select name="sort" id="sort" class="form-select">
+                    <option value="name" {% if sort_by == 'name' %}selected{% endif %}>По названию</option>
+                    <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>По цене (возр.)</option>
+                    <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>По цене (убыв.)</option>
+                    <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>По рейтингу</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label for="search" class="form-label">Поиск</label>
+                <input type="text" class="form-control" id="search" name="search" value="{{ search_query|default:'' }}" placeholder="Название или ингредиенты">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search"></i> Найти
+                </button>
+            </div>
+            <div class="col-12">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="vegetarian" name="vegetarian" {% if is_vegetarian %}checked{% endif %}>
+                    <label class="form-check-label" for="vegetarian">Вегетарианские</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="spicy" name="spicy" {% if is_spicy %}checked{% endif %}>
+                    <label class="form-check-label" for="spicy">Острые</label>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Пиццы -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for pizza in pizzas %}
+        <div class="col">
+            <div class="card h-100">
+                {% if pizza.image %}
+                <img src="{{ pizza.image.url }}" class="card-img-top" alt="{{ pizza.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <img src="{% static 'img/pizza-placeholder.png' %}" class="card-img-top" alt="{{ pizza.name }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ pizza.name }}</h5>
+                    <p class="card-text">{{ pizza.description|truncatewords:20 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="price">от {{ pizza.base_price }} Br</span>
+                        <div class="rating">
+                            {% if pizza.average_rating %}
+                            <i class="fas fa-star text-warning"></i> {{ pizza.average_rating|floatformat:1 }}
+                            {% else %}
+                            
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a href="{% url 'pizzeria:pizza_detail' pizza_id=pizza.id %}" class="btn btn-outline-primary">Подробнее</a>
+                    </div>
+                </div>
+                {% if pizza.is_vegetarian or pizza.is_spicy %}
+                <div class="card-footer">
+                    {% if pizza.is_vegetarian %}
+                    <span class="badge bg-success me-2">Вегетарианская</span>
+                    {% endif %}
+                    {% if pizza.is_spicy %}
+                    <span class="badge bg-danger">Острая</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="empty-state text-center py-5">
+                <i class="fas fa-pizza-slice fa-3x mb-3"></i>
+                <h4>Пиццы не найдены</h4>
+                <p>Попробуйте изменить параметры поиска</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Пагинация -->
+    {% if pizzas.has_other_pages %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if pizzas.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ pizzas.previous_page_number }}&category={{ selected_category }}&sort={{ sort_by }}&search={{ search_query }}&vegetarian={{ is_vegetarian }}&spicy={{ is_spicy }}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in pizzas.paginator.page_range %}
+            <li class="page-item {% if pizzas.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}&category={{ selected_category }}&sort={{ sort_by }}&search={{ search_query }}&vegetarian={{ is_vegetarian }}&spicy={{ is_spicy }}">
+                    {{ num }}
+                </a>
+            </li>
+            {% endfor %}
+
+            {% if pizzas.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ pizzas.next_page_number }}&category={{ selected_category }}&sort={{ sort_by }}&search={{ search_query }}&vegetarian={{ is_vegetarian }}&spicy={{ is_spicy }}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+{% block extra_js %}
+<script>
+function addToCart(pizzaId) {
+    // Здесь будет логика добавления в корзину
+}
+</script>
+{% endblock %}
+{% endblock %} 

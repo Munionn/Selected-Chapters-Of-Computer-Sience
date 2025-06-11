@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Акции - Пиццерия{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Акции и специальные предложения</h1>
+
+    <!-- Active Promotions -->
+    <section class="mb-5">
+        <h2 class="mb-4">Действующие акции</h2>
+        {% if active_promotions %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for promotion in active_promotions %}
+                    <div class="col">
+                        <div class="card h-100">
+                            {% if promotion.image %}
+                                <img src="{{ promotion.image.url }}" class="card-img-top" alt="{{ promotion.title }}"
+                                     style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ promotion.title }}</h5>
+                                <p class="card-text">{{ promotion.description }}</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Действует до {{ promotion.end_date|date:"d.m.Y" }}
+                                    </small>
+                                </p>
+                                {% if promotion.discount_percent %}
+                                    <div class="badge bg-danger">Скидка {{ promotion.discount_percent }}%</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                В данный момент нет действующих акций.
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- Upcoming Promotions -->
+    <section>
+        <h2 class="mb-4">Предстоящие акции</h2>
+        {% if upcoming_promotions %}
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for promotion in upcoming_promotions %}
+                    <div class="col">
+                        <div class="card h-100">
+                            {% if promotion.image %}
+                                <img src="{{ promotion.image.url }}" class="card-img-top" alt="{{ promotion.title }}"
+                                     style="height: 200px; object-fit: cover;">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ promotion.title }}</h5>
+                                <p class="card-text">{{ promotion.description }}</p>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        Начало акции: {{ promotion.start_date|date:"d.m.Y" }}<br>
+                                        Окончание: {{ promotion.end_date|date:"d.m.Y" }}
+                                    </small>
+                                </p>
+                                {% if promotion.discount_percent %}
+                                    <div class="badge bg-secondary">Скидка {{ promotion.discount_percent }}%</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                Нет предстоящих акций.
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %} 

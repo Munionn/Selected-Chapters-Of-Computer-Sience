@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Выбор мастера{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'pizzeria:services_list' %}">Услуги</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{{ service.name }}</li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-4">Выбор мастера для услуги "{{ service.name }}"</h1>
+            <p class="lead mb-3">{{ service.description }}</p>
+            <p class="mb-5"><strong>Цена от: </strong>{{ service.price }} руб.</p>
+        </div>
+    </div>
+
+    {% if masters %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+            {% for master in masters %}
+                <div class="col">
+                    <div class="card h-100">
+                        {% if master.photo %}
+                            <img src="{{ master.photo.url }}" class="card-img-top" alt="{{ master.user.first_name }} {{ master.user.last_name }}" style="height: 300px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 300px;">
+                                <h1>{{ master.user.first_name|first }}{{ master.user.last_name|first }}</h1>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ master.user.first_name }} {{ master.user.last_name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                {% for spec in master.specializations.all %}
+                                    {% if not forloop.first %} | {% endif %}
+                                    {{ spec.name }}
+                                {% endfor %}
+                            </h6>
+                            <p class="card-text">{{ master.bio|default:"Информация о мастере отсутствует"|truncatewords:30 }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{% url 'pizzeria:create_order' service.id master.id %}" class="btn btn-success">Выбрать мастера</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    К сожалению, в данный момент нет доступных мастеров для этой услуги. Пожалуйста, выберите другую услугу или зайдите позже.
+                </div>
+                <a href="{% url 'pizzeria:services_list' %}" class="btn btn-primary">Назад к списку услуг</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<div class="container mt-4 text-muted">
+    <div class="row">
+        <div class="col-12">
+            <p>Дата и время (ваша тайм-зона): {{ current_date|date:"d/m/Y H:i:s" }}</p>
+            <p>Дата и время (UTC): {{ current_date_utc|date:"d/m/Y H:i:s" }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление вакансии | Ателье{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'pizzeria:vacancies_list' %}">Вакансии</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Удаление</li>
+                </ol>
+            </nav>
+            
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Подтверждение удаления</h5>
+                </div>
+                <div class="card-body">
+                    <h4 class="alert-heading mb-3">Вы действительно хотите удалить вакансию?</h4>
+                    <p><strong>Название:</strong> {{ vacancy.title }}</p>
+                    <p><strong>Специализация:</strong> {{ vacancy.specialization.name }}</p>
+                    <p><strong>Зарплата:</strong> {{ vacancy.salary }} руб./месяц</p>
+                    <hr>
+                    <p class="mb-0 text-danger">Внимание! Это действие нельзя будет отменить.</p>
+                    
+                    <div class="mt-4">
+                        <form method="post">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Да, удалить</button>
+                            <a href="{% url 'pizzeria:vacancies_list' %}" class="btn btn-secondary">Отмена</a>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

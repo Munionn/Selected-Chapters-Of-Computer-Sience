@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная - Пиццерия{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
+    <div class="col-lg-8 px-0">
+        <h1 class="display-4 fw-bold">Добро пожаловать в нашу пиццерию!</h1>
+        <p class="lead my-3">Лучшая пицца в городе. Свежие ингредиенты, традиционные рецепты.</p>
+        <p class="lead mb-0"><a href="{% url 'pizzeria:menu' %}" class="btn btn-primary btn-lg">Перейти к меню →</a></p>
+    </div>
+</div>
+
+<!-- Featured Pizzas Section -->
+{% if best_sellers %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="mb-4">Популярные пиццы</h2>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            {% for pizza in best_sellers %}
+            <div class="col">
+                <div class="card h-100">
+                    {% if pizza.image %}
+                        <img src="{{ pizza.image.url }}" class="card-img-top" alt="{{ pizza.name }}"
+                             style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ pizza.name }}</h5>
+                        <p class="card-text">{{ pizza.description|truncatewords:20 }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-primary fw-bold">от {{ pizza.base_price }} руб.</span>
+                            {% if pizza.is_spicy %}
+                                <span class="badge bg-danger">Острая</span>
+                            {% endif %}
+                            {% if pizza.is_vegetarian %}
+                                <span class="badge bg-success">Вегетарианская</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-top-0">
+                        <a href="{% url 'pizzeria:pizza_detail' pizza.id %}" class="btn btn-outline-primary w-100">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Promotions Section -->
+{% if active_promotions %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="mb-4">Акции и специальные предложения</h2>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for promotion in active_promotions %}
+            <div class="col">
+                <div class="card h-100">
+                    {% if promotion.image %}
+                        <img src="{{ promotion.image.url }}" class="card-img-top" alt="{{ promotion.name }}"
+                             style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="h5">{{ promotion.name }}</h3>
+                        <p class="card-text">{{ promotion.description }}</p>
+                        {% if promotion.discount_percent %}
+                            <div class="badge bg-danger mb-2">Скидка {{ promotion.discount_percent }}%</div>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer text-muted">
+                        Действует до {{ promotion.end_date|date:"d.m.Y" }}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Features Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="mb-4">Почему выбирают нас</h2>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="h5">🍕 Настоящая итальянская пицца</h3>
+                        <p class="card-text">Наши повара прошли обучение в Италии и готовят пиццу по традиционным рецептам.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="h5">🌟 Свежие ингредиенты</h3>
+                        <p class="card-text">Мы используем только свежие и качественные ингредиенты от проверенных поставщиков.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="h5">🚚 Быстрая доставка</h3>
+                        <p class="card-text">Доставляем пиццу горячей в течение 60 минут или заказ бесплатно!</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="h5">💳 Удобная оплата</h3>
+                        <p class="card-text">Принимаем наличные и банковские карты. Возможна оплата онлайн.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Working Hours Section -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="h5 mb-0">Часы работы</h3>
+            </div>
+            <div class="card-body">
+                <p class="mb-1"><strong>Пн-Чт:</strong> 11:00-23:00</p>
+                <p class="mb-1"><strong>Пт-Сб:</strong> 11:00-02:00</p>
+                <p class="mb-0"><strong>Вс:</strong> 12:00-23:00</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="h5 mb-0">Контакты</h3>
+            </div>
+            <div class="card-body">
+                <p class="mb-1"><i class="bi bi-telephone"></i> <strong>Телефон:</strong> +375 (XX) XXX-XX-XX</p>
+                <p class="mb-1"><i class="bi bi-envelope"></i> <strong>Email:</strong> info@pizzeria.com</p>
+                <p class="mb-0"><i class="bi bi-geo-alt"></i> <strong>Адрес:</strong> г. Минск, ул. Примерная, 123</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

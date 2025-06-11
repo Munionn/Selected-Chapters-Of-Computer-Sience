@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Отзывы - Ателье{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Отзывы клиентов</h1>
+            
+            <div class="d-flex justify-content-between mb-4">
+                <p class="lead">Здесь вы можете прочитать отзывы наших клиентов или оставить свой отзыв.</p>
+                <a href="{% url 'pizzeria:add_review' %}" class="btn btn-primary">Оставить отзыв</a>
+            </div>
+            
+            {% if reviews %}
+                <div class="row">
+                    {% for review in reviews %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <h5 class="card-title">{{ review.client.user.first_name }} {{ review.client.user.last_name }}</h5>
+                                        <span class="badge {% if review.rating >= 4 %}bg-success{% elif review.rating == 3 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ review.get_rating_display }}
+                                        </span>
+                                    </div>
+                                    <p class="card-text">{{ review.content }}</p>
+                                    <div class="text-muted small">
+                                        Опубликовано: {{ review.created_at|date:"d/m/Y" }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    Пока нет отзывов. Будьте первым, кто оставит отзыв!
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,124 @@
+{% extends 'pizzeria/base.html' %}
+{% load static %}
+{% load shop_filters %}
+
+{% block title %}Промокоды - Пиццерия{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1>Активные промокоды</h1>
+            <p class="lead">Используйте промокоды для получения скидок на заказы</p>
+            <!-- Test filter -->
+            <p>Test currency filter: {{ 100|currency }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for promo in promo_codes %}
+        {% if promo.is_valid %}
+        <div class="col-md-6 mb-4">
+            <div class="card promo-card h-100 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title mb-0">{{ promo.description }}</h5>
+                        <span class="badge bg-success">Активен</span>
+                    </div>
+
+                    <div class="promo-code-display mb-3 p-3 bg-light rounded text-center">
+                        <h3 class="mb-0 font-monospace">{{ promo.code }}</h3>
+                    </div>
+
+                    <div class="discount-info mb-3">
+                        <h6 class="text-primary">
+                            {% if promo.discount_type == 'fixed' %}
+                            Скидка {{ promo.discount_amount|floatformat:0 }} руб.
+                            {% else %}
+                            Скидка {{ promo.discount_amount|floatformat:0 }}%
+                            {% endif %}
+                        </h6>
+                        {% if promo.min_order_amount > 0 %}
+                        <p class="text-muted small">
+                            Минимальная сумма заказа: {{ promo.min_order_amount|floatformat:0 }} руб.
+                        </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="validity-info">
+                        <p class="mb-2">
+                            <i class="far fa-calendar-alt me-2"></i>
+                            Действует до {{ promo.end_date|date:"d.m.Y" }}
+                        </p>
+                        {% if promo.usage_limit %}
+                        <p class="mb-0">
+                            <i class="fas fa-users me-2"></i>
+                            Осталось использований: {{ promo|remaining_uses }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card-footer bg-transparent">
+                    <button class="btn btn-outline-primary copy-code" data-code="{{ promo.code }}">
+                        <i class="far fa-copy me-2"></i>
+                        Копировать код
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                На данный момент активных промокодов нет. Следите за обновлениями!
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const copyButtons = document.querySelectorAll('.copy-code');
+    
+    copyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const code = this.dataset.code;
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-check me-2"></i>Скопировано!';
+                this.classList.remove('btn-outline-primary');
+                this.classList.add('btn-success');
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.classList.remove('btn-success');
+                    this.classList.add('btn-outline-primary');
+                }, 2000);
+            });
+        });
+    });
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.promo-card {
+    transition: transform 0.2s;
+}
+.promo-card:hover {
+    transform: translateY(-5px);
+}
+.promo-code-display {
+    background: linear-gradient(45deg, #f8f9fa 25%, #e9ecef 25%, #e9ecef 50%, #f8f9fa 50%, #f8f9fa 75%, #e9ecef 75%, #e9ecef);
+    background-size: 10px 10px;
+}
+.copy-code {
+    width: 100%;
+}
+</style>
+{% endblock %} 

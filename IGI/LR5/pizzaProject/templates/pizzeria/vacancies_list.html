@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+
+{% block title %}Вакансии{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h1 class="display-5 border-bottom pb-2 mb-4">Вакансии</h1>
+            <p class="lead">Присоединяйтесь к нашей команде профессионалов! Мы ищем талантливых мастеров для работы в нашем ателье.</p>
+        </div>
+    </div>
+    
+    {% if user.is_staff %}
+    <!-- Admin: Create Vacancy Form -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Создать новую вакансию</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'pizzeria:vacancies_list' %}">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ vacancy_form.title.id_for_label }}" class="form-label">{{ vacancy_form.title.label }}</label>
+                                    {{ vacancy_form.title }}
+                                    {% if vacancy_form.title.errors %}
+                                        <div class="text-danger">{{ vacancy_form.title.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ vacancy_form.specialization.id_for_label }}" class="form-label">{{ vacancy_form.specialization.label }}</label>
+                                    {{ vacancy_form.specialization }}
+                                    {% if vacancy_form.specialization.errors %}
+                                        <div class="text-danger">{{ vacancy_form.specialization.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="{{ vacancy_form.salary.id_for_label }}" class="form-label">{{ vacancy_form.salary.label }}</label>
+                                    {{ vacancy_form.salary }}
+                                    {% if vacancy_form.salary.errors %}
+                                        <div class="text-danger">{{ vacancy_form.salary.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3 form-check">
+                                    {{ vacancy_form.is_active }}
+                                    <label class="form-check-label" for="{{ vacancy_form.is_active.id_for_label }}">{{ vacancy_form.is_active.label }}</label>
+                                    {% if vacancy_form.is_active.errors %}
+                                        <div class="text-danger">{{ vacancy_form.is_active.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label for="{{ vacancy_form.description.id_for_label }}" class="form-label">{{ vacancy_form.description.label }}</label>
+                                    {{ vacancy_form.description }}
+                                    {% if vacancy_form.description.errors %}
+                                        <div class="text-danger">{{ vacancy_form.description.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary">Создать вакансию</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Filters -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Фильтры</h5>
+                </div>
+                <div class="card-body">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-5">
+                            <label for="specialization" class="form-label">Специализация</label>
+                            <select name="specialization" id="specialization" class="form-select">
+                                <option value="">Все специализации</option>
+                                {% for spec in specializations %}
+                                <option value="{{ spec.id }}" {% if selected_specialization == spec.id|stringformat:"i" %}selected{% endif %}>
+                                    {{ spec.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="min_salary" class="form-label">Минимальная зарплата (руб.)</label>
+                            <input type="number" class="form-control" id="min_salary" name="min_salary" 
+                                   placeholder="Минимальная зарплата" value="{{ min_salary|default:'' }}">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">Применить</button>
+                        </div>
+                    </form>
+                </div>
+                {% if selected_specialization or min_salary %}
+                <div class="card-footer">
+                    <a href="{% url 'pizzeria:vacancies_list' %}" class="btn btn-outline-secondary">Сбросить фильтры</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Vacancies List -->
+    <div class="row">
+        {% if vacancies %}
+            {% for vacancy in vacancies %}
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 {% if not vacancy.is_active and user.is_staff %}border-danger{% endif %}">
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ vacancy.title }}</h5>
+                        {% if user.is_staff %}
+                        <div class="btn-group">
+                            <a href="{% url 'pizzeria:vacancy_edit' vacancy.id %}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-pencil"></i> Редактировать
+                            </a>
+                            <a href="{% url 'pizzeria:vacancy_delete' vacancy.id %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i> Удалить
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">Специализация: {{ vacancy.specialization.name }}</h6>
+                        {% if user.is_staff and not vacancy.is_active %}
+                            <div class="alert alert-danger mb-2">
+                                <small>Эта вакансия неактивна и видна только администраторам</small>
+                            </div>
+                        {% endif %}
+                        <p class="card-text">{{ vacancy.description|linebreaks }}</p>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between align-items-center">
+                        <span class="text-primary fw-bold">{{ vacancy.salary }} руб./месяц</span>
+                        <a href="{% url 'pizzeria:register_master' %}" class="btn btn-primary">Откликнуться</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <p>В настоящее время нет доступных вакансий{% if selected_specialization or min_salary %} с выбранными параметрами{% endif %}.</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+{% endblock %} 

@@ -1,0 +1,184 @@
+/* Основные цвета */
+:root {
+    --primary-color: #800080;    /* фиолетовый */
+    --secondary-color: #000000;  /* черный */
+    --accent-color: #008000;     /* зеленый */
+    --hover-primary: #660066;    /* темно-фиолетовый для hover */
+    --text-light: #FFFFFF;
+    --text-dark: #000000;
+}
+
+/* Кнопки */
+.btn-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--text-light) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--hover-primary) !important;
+    border-color: var(--hover-primary) !important;
+}
+
+.btn-outline-primary {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--text-light) !important;
+}
+
+.btn-outline-danger {
+    color: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+}
+
+.btn-outline-danger:hover {
+    background-color: var(--accent-color) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--text-light) !important;
+}
+
+/* Навигация */
+.navbar {
+    background-color: var(--secondary-color) !important;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--text-light) !important;
+}
+
+.navbar-dark .navbar-brand {
+    color: var(--primary-color) !important;
+}
+
+/* Таблицы */
+.table th {
+    background-color: var(--primary-color) !important;
+    color: var(--text-light) !important;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(128, 0, 128, 0.1) !important;
+}
+
+/* Формы */
+.form-label {
+    color: var(--primary-color) !important;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(128, 0, 128, 0.25) !important;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* Карточки */
+.card {
+    border-color: var(--accent-color) !important;
+}
+
+.card-header {
+    background-color: var(--primary-color) !important;
+    color: var(--text-light) !important;
+}
+
+/* Пагинация */
+.page-item.active .page-link {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.page-link {
+    color: var(--primary-color) !important;
+}
+
+.page-link:hover {
+    color: var(--hover-primary) !important;
+}
+
+/* Модальные окна */
+.modal-header {
+    background-color: var(--primary-color) !important;
+    color: var(--text-light) !important;
+}
+
+/* Alerts */
+.alert-primary {
+    background-color: rgba(128, 0, 128, 0.1) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--primary-color) !important;
+}
+
+.alert-success {
+    background-color: rgba(0, 128, 0, 0.1) !important;
+    border-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
+}
+
+/* Badges */
+.badge-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.badge-secondary {
+    background-color: var(--secondary-color) !important;
+}
+
+/* Списки */
+.list-group-item.active {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* Заголовки */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color) !important;
+}
+
+/* Ссылки */
+a {
+    color: var(--primary-color) !important;
+}
+
+a:hover {
+    color: var(--hover-primary) !important;
+}
+
+/* Дополнительные элементы */
+.empty-state {
+    color: var(--accent-color) !important;
+}
+
+.progress-bar {
+    background-color: var(--primary-color) !important;
+}
+
+/* Цены и акценты */
+.price {
+    color: var(--accent-color) !important;
+    font-weight: bold;
+}
+
+.highlight {
+    color: var(--primary-color) !important;
+}
+
+/* Статусы */
+.status-active {
+    color: var(--accent-color) !important;
+}
+
+.status-pending {
+    color: var(--primary-color) !important;
+}
+
+.status-completed {
+    color: var(--secondary-color) !important;
+} 

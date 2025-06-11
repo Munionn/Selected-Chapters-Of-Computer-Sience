@@ -1,0 +1,92 @@
+{% extends 'pizzeria/base.html' %}
+{% load static %}
+{% load shop_filters %}
+
+{% block title %}Заказ подтвержден{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">
+                <i class="fas fa-check-circle"></i> Заказ #{{ order.id }} успешно оформлен
+            </h4>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                <h5 class="alert-heading">Спасибо за ваш заказ!</h5>
+                <p>Мы начали готовить ваши пиццы. Ожидаемое время доставки: 45-60 минут.</p>
+            </div>
+
+            <h5 class="mb-4">Детали заказа:</h5>
+            
+            <!-- Order Items -->
+            <div class="table-responsive mb-4">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Пицца</th>
+                            <th>Размер</th>
+                            <th>Количество</th>
+                            <th class="text-end">Цена</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td>{{ item.pizza.name }}</td>
+                            <td>{{ item.size.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td class="text-end">{{ item.price|multiply:item.quantity|floatformat:2 }} Br</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Подытог:</strong></td>
+                            <td class="text-end">{{ order.total_price|subtract:order.delivery_price|floatformat:2 }} Br</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Доставка:</strong></td>
+                            <td class="text-end">{{ order.delivery_price|floatformat:2 }} Br</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="text-end"><strong>Итого:</strong></td>
+                            <td class="text-end"><strong>{{ order.total_price|floatformat:2 }} Br</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Delivery Information -->
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Информация о доставке:</h5>
+                    <p><strong>Адрес:</strong> {{ order.delivery_address }}</p>
+                    <p><strong>Способ оплаты:</strong> {{ order.get_payment_method_display }}</p>
+                    {% if order.comment %}
+                    <p><strong>Комментарий к заказу:</strong> {{ order.comment }}</p>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <h5>Контактная информация:</h5>
+                    <p><strong>Имя:</strong> {{ order.customer.user.get_full_name }}</p>
+                    <p><strong>Телефон:</strong> {{ order.customer.phone_number }}</p>
+                    <p><strong>Email:</strong> {{ order.customer.user.email }}</p>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="text-center">
+                <a href="{% url 'pizzeria:menu' %}" class="btn btn-primary me-2">
+                    <i class="fas fa-pizza-slice"></i> Вернуться в меню
+                </a>
+                <a href="{% url 'pizzeria:profile' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-user"></i> Перейти в профиль
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

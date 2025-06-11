@@ -1,0 +1,261 @@
+{% extends 'pizzeria/base.html' %}
+{% load static %}
+
+{% block title %}О нас - Пиццерия{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-md-12 text-center">
+            <h1 class="display-4 mb-4">Добро пожаловать в нашу пиццерию</h1>
+            
+        </div>
+    </div>
+
+    <!-- Our Story -->
+    <div class="row mb-5">
+        
+        <div class="col-md-6">
+            <h2 class="mb-4">Наша история</h2>
+            <p>Мы начали свой путь как небольшая семейная пиццерия в центре Минска. Наша цель была проста - готовить самую вкусную пиццу в городе, используя только свежие и качественные ингредиенты.</p>
+            <p>Сегодня мы выросли, но наши принципы остались неизменными:</p>
+            <ul class="list-unstyled">
+                <li><i class="fas fa-check text-success me-2"></i> Только свежие ингредиенты</li>
+                <li><i class="fas fa-check text-success me-2"></i> Тесто собственного приготовления</li>
+                <li><i class="fas fa-check text-success me-2"></i> Уникальные рецепты соусов</li>
+                <li><i class="fas fa-check text-success me-2"></i> Быстрая доставка</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Our Values -->
+    <div class="row mb-5">
+        <div class="col-md-12 text-center mb-4">
+            <h2>Наши ценности</h2>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-heart text-danger fa-3x mb-3"></i>
+                    <h4>Качество</h4>
+                    <p>Мы используем только лучшие ингредиенты и следим за каждым этапом приготовления.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-clock text-primary fa-3x mb-3"></i>
+                    <h4>Скорость</h4>
+                    <p>Доставляем заказы в течение 60 минут или пицца бесплатно!</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <i class="fas fa-smile text-warning fa-3x mb-3"></i>
+                    <h4>Сервис</h4>
+                    <p>Наша команда делает всё, чтобы каждый клиент остался доволен.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our Team -->
+    <div class="row mb-5">
+        <div class="col-md-12 text-center mb-4">
+            <h2>Наша команда</h2>
+        </div>
+        {% for member in team_members %}
+        <div class="col-md-3 mb-4">
+            <div class="card border-0 shadow-sm">
+                <img src="{{ member.picture.large }}" class="card-img-top" alt="{{ member.name.first }} {{ member.name.last }}" style="height: 250px; object-fit: cover;">
+                <div class="card-body text-center">
+                    <h5>{{ member.name.first }} {{ member.name.last }}</h5>
+                    <p class="text-muted">{{ member.email }}</p>
+                    <div class="small text-muted">
+                        <p class="mb-1"><i class="fas fa-map-marker-alt me-2"></i>{{ member.location.city }}, {{ member.location.country }}</p>
+                        <p class="mb-0"><i class="fas fa-phone me-2"></i>{{ member.phone }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Statistics -->
+    <div class="row mb-5 py-4 bg-light rounded">
+        <div class="col-md-3 text-center mb-3">
+            <h3 class="display-4 text-primary">5+</h3>
+            <p class="text-muted">Лет работы</p>
+        </div>
+        <div class="col-md-3 text-center mb-3">
+            <h3 class="display-4 text-primary">30+</h3>
+            <p class="text-muted">Видов пиццы</p>
+        </div>
+        <div class="col-md-3 text-center mb-3">
+            <h3 class="display-4 text-primary">100k+</h3>
+            <p class="text-muted">Довольных клиентов</p>
+        </div>
+        <div class="col-md-3 text-center mb-3">
+            <h3 class="display-4 text-primary">4.9</h3>
+            <p class="text-muted">Рейтинг в Яндекс</p>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="mb-4">Контакты</h3>
+                    <p><i class="fas fa-map-marker-alt text-primary me-2"></i> ул. Пиццы, 1, Минск</p>
+                    <p><i class="fas fa-phone text-primary me-2"></i> +375 (29) 123-45-67</p>
+                    <p><i class="fas fa-envelope text-primary me-2"></i> info@pizzeria.by</p>
+                    <h4 class="mt-4 mb-3">Время работы:</h4>
+                    <p><i class="fas fa-clock text-primary me-2"></i> Пн-Пт: 10:00 - 22:00</p>
+                    <p><i class="fas fa-clock text-primary me-2"></i> Сб-Вс: 11:00 - 23:00</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="mb-4">Календарь</h3>
+                    <div id="calendar" class="calendar-wrapper"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h3 class="mb-4">Мы на карте</h3>
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2350.1141277669207!2d27.558229776940665!3d53.90255657246715!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46dbcf9f6a7a8e3d%3A0x3b6b8b2b2b2b2b2b!2z0L_RgNC-0YHQv9C10LrRgiDQndC10LfQsNCy0LjRgdC40LzQvtGB0YLQuCwg0JzQuNC90YHQug!5e0!3m2!1sru!2sby!4v1620000000000!5m2!1sru!2sby" 
+                                style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card {
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .statistics .display-4 {
+        font-weight: bold;
+        color: #007bff;
+    }
+    .team-member img {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 1rem;
+    }
+    .calendar-wrapper {
+        width: 100%;
+        min-height: 300px;
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 8px;
+    }
+    .calendar-wrapper table {
+        width: 100%;
+    }
+    .calendar-wrapper th {
+        text-align: center;
+        padding: 10px;
+        background-color: #f8f9fa;
+    }
+    .calendar-wrapper td {
+        text-align: center;
+        padding: 8px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .calendar-wrapper td:hover {
+        background-color: #e9ecef;
+    }
+    .calendar-wrapper .today {
+        background-color: #007bff;
+        color: white;
+        border-radius: 50%;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const calendar = document.getElementById('calendar');
+    const date = new Date();
+    const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+    const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
+    function createCalendar(year, month) {
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        
+        let html = `
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <button class="btn btn-sm btn-outline-primary" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+                <h5 class="mb-0">${months[month]} ${year}</h5>
+                <button class="btn btn-sm btn-outline-primary" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        ${days.map(day => `<th>${day}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        let day = 1;
+        const firstDayIndex = (firstDay.getDay() + 6) % 7;
+        
+        for (let i = 0; i < 6; i++) {
+            html += '<tr>';
+            for (let j = 0; j < 7; j++) {
+                if (i === 0 && j < firstDayIndex) {
+                    html += '<td></td>';
+                } else if (day > lastDay.getDate()) {
+                    html += '<td></td>';
+                } else {
+                    const isToday = day === date.getDate() && month === date.getMonth() && year === date.getFullYear();
+                    html += `<td class="${isToday ? 'today' : ''}">${day}</td>`;
+                    day++;
+                }
+            }
+            html += '</tr>';
+            if (day > lastDay.getDate()) break;
+        }
+
+        html += '</tbody></table>';
+        calendar.innerHTML = html;
+    }
+
+    window.prevMonth = function() {
+        date.setMonth(date.getMonth() - 1);
+        createCalendar(date.getFullYear(), date.getMonth());
+    }
+
+    window.nextMonth = function() {
+        date.setMonth(date.getMonth() + 1);
+        createCalendar(date.getFullYear(), date.getMonth());
+    }
+
+    createCalendar(date.getFullYear(), date.getMonth());
+});
+</script>
+{% endblock %} 

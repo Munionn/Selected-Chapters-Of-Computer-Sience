@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Пиццерия{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    {% load static %}
+    <!-- Custom CSS -->
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'pizzeria:home' %}">Пиццерия</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pizzeria:home' %}">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pizzeria:about' %}">О нас</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pizzeria:menu' %}">Меню</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pizzeria:promotions' %}">Акции</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pizzeria:faq' %}">FAQ</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'pizzeria:cart' %}">Корзина</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                
+                <!-- User Menu -->
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <span class="navbar-text me-3">{{ user.username }}</span>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'pizzeria:profile' %}">Профиль</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'pizzeria:logout' %}">Выйти</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'pizzeria:login' %}">Вход</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'pizzeria:register' %}">Регистрация</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light mt-5">
+        <div class="container py-4">
+            <div class="row">
+                <div class="col-md-3">
+                    <h5>О нас</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'pizzeria:about' %}" class="text-light">О компании</a></li>
+                        <li><a href="{% url 'pizzeria:news_list' %}" class="text-light">Новости</a></li>
+                        <li><a href="{% url 'pizzeria:staff' %}" class="text-light">Наша команда</a></li>
+                        <li><a href="{% url 'pizzeria:reviews' %}" class="text-light">Отзывы</a></li>
+                        <li><a href="{% url 'pizzeria:contacts' %}" class="text-light">Контакты</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Помощь</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'pizzeria:faq' %}" class="text-light">FAQ</a></li>
+                        <li><a href="{% url 'pizzeria:glossary' %}" class="text-light">Словарь терминов</a></li>
+                        <li><a href="{% url 'pizzeria:privacy' %}" class="text-light">Политика конфиденциальности</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Возможности</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'pizzeria:vacancies' %}" class="text-light">Вакансии</a></li>
+                        <li><a href="{% url 'pizzeria:promo_codes' %}" class="text-light">Промокоды</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Контакты</h5>
+                    <p><i class="fas fa-phone"></i> +375 (29) 123-45-67</p>
+                    <p><i class="fas fa-envelope"></i> info@pizzeria.by</p>
+                    <p><i class="fas fa-map-marker-alt"></i> ул. Пиццы, 1, Минск</p>
+                    <div class="social-links mt-3">
+                        <a href="#" class="text-light me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-light me-3"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4">
+            <div class="text-center">
+                <p class="mb-0">&copy; {% now "Y" %} Пиццерия. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Custom JavaScript -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 
