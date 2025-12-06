@@ -1,0 +1,149 @@
+{% extends 'pizzeria/admin/base_admin.html' %}
+{% load static %}
+
+{% block title %}Настройки слайдера{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Настройки слайдера</h1>
+            
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Параметры слайдера</h5>
+                </div>
+                <div class="card-body">
+                    <form id="sliderSettingsForm" method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <h6>Основные настройки</h6>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="loop" name="loop" {% if settings.loop %}checked{% endif %}>
+                                <label class="form-check-label" for="loop">
+                                    <strong>Loop (Циклическая прокрутка)</strong>
+                                    <small class="text-muted d-block">При включении, после последнего слайда переход на первый</small>
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="navs" name="navs" {% if settings.navs %}checked{% endif %}>
+                                <label class="form-check-label" for="navs">
+                                    <strong>Navs (Стрелки навигации)</strong>
+                                    <small class="text-muted d-block">Показывать кнопки "Назад" и "Вперед"</small>
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="pags" name="pags" {% if settings.pags %}checked{% endif %}>
+                                <label class="form-check-label" for="pags">
+                                    <strong>Pags (Пагинация)</strong>
+                                    <small class="text-muted d-block">Показывать точки пагинации внизу слайдера</small>
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="auto" name="auto" {% if settings.auto %}checked{% endif %}>
+                                <label class="form-check-label" for="auto">
+                                    <strong>Auto (Автопереключение)</strong>
+                                    <small class="text-muted d-block">Автоматическое переключение слайдов</small>
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="stopMouseHover" name="stopMouseHover" {% if settings.stopMouseHover %}checked{% endif %}>
+                                <label class="form-check-label" for="stopMouseHover">
+                                    <strong>Stop Mouse Hover (Пауза при наведении)</strong>
+                                    <small class="text-muted d-block">Останавливать автопереключение при наведении мыши (работает только если Auto включен)</small>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h6>Время показа слайда</h6>
+                            <div class="form-group">
+                                <label for="delay">
+                                    <strong>Delay (секунды)</strong>
+                                    <small class="text-muted d-block">Время показа каждого слайда в секундах (по умолчанию 5 секунд, если не указано)</small>
+                                </label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="delay" 
+                                       name="delay" 
+                                       value="{{ settings.delay }}" 
+                                       min="1" 
+                                       max="60" 
+                                       step="0.5"
+                                       required>
+                                <small class="form-text text-muted">Минимум: 1 секунда, Максимум: 60 секунд</small>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <h6>Информация:</h6>
+                            <ul class="mb-0">
+                                <li>Все настройки сохраняются в localStorage браузера</li>
+                                <li>Слайдер автоматически применяет настройки при загрузке страницы</li>
+                                <li>Счетчик слайдов (1/3, 2/3, 3/3) отображается автоматически</li>
+                                <li>Каждый слайд имеет свою ссылку для перехода</li>
+                            </ul>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>Сохранить настройки
+                        </button>
+                        <a href="{% url 'pizzeria:home' %}" class="btn btn-secondary btn-lg ms-2" target="_blank">
+                            <i class="fas fa-eye me-2"></i>Посмотреть слайдер
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('sliderSettingsForm');
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form data
+        const formData = new FormData(form);
+        const settings = {
+            loop: formData.get('loop') === 'on',
+            navs: formData.get('navs') === 'on',
+            pags: formData.get('pags') === 'on',
+            auto: formData.get('auto') === 'on',
+            stopMouseHover: formData.get('stopMouseHover') === 'on',
+            delay: parseFloat(formData.get('delay')) || 5
+        };
+        
+        // Save to localStorage
+        localStorage.setItem('sliderSettings', JSON.stringify(settings));
+        
+        // Submit form to server
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        }).then(() => {
+            alert('Настройки сохранены! Обновите страницу с слайдером для применения изменений.');
+            // Optionally reload the page
+            // window.location.reload();
+        }).catch(error => {
+            console.error('Error saving settings:', error);
+            alert('Ошибка при сохранении настроек');
+        });
+    });
+});
+</script>
+{% endblock %}
+

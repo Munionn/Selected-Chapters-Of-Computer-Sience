@@ -1,0 +1,678 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="ru" class="h-100" dir="ltr" spellcheck="true">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="{% block meta_description %}Лучшая пиццерия в городе с доставкой. Свежие ингредиенты, традиционные рецепты.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}пицца, доставка, итальянская кухня, пиццерия{% endblock %}">
+    <meta name="author" content="PizzaMaster">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#e91e63">
+    <meta name="msapplication-TileColor" content="#e91e63">
+    <meta name="msapplication-TileImage" content="{% static 'img/logo.png' %}?v=1.0">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="{% block og_title %}{{ self.title }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ self.meta_description }}{% endblock %}">
+    <meta property="og:image" content="{% static 'img/logo.png' %}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+    <meta property="twitter:title" content="{% block twitter_title %}{{ self.title }}{% endblock %}">
+    <meta property="twitter:description" content="{% block twitter_description %}{{ self.meta_description }}{% endblock %}">
+    <meta property="twitter:image" content="{% static 'img/logo.png' %}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/logo.png' %}?v=1.0">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/logo.png' %}?v=1.0">
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/logo.png' %}?v=1.0"
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static 'img/logo.png' %}?v=1.0">
+    
+    <link rel="manifest" href="{% static 'site.webmanifest' %}?v=1.0">
+
+    <title itemprop="name">{% block title %}Пиццерия{% endblock %}</title>
+
+    <!-- Theme initialization script (load early to prevent flash) -->
+    <script>
+        // Apply saved theme immediately before page render
+        (function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}?v=2">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}?v=2">
+    
+    <!-- Responsive Images CSS -->
+    <style>
+        /* Responsive Images */
+        picture {
+            display: block;
+            width: 100%;
+        }
+        
+        picture img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Lazy Loading */
+        img[loading="lazy"] {
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        img[loading="lazy"].loaded {
+            opacity: 1;
+        }
+        
+        /* Responsive Image Containers */
+        .responsive-img-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .responsive-img-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Aspect Ratio Containers */
+        .aspect-ratio-16-9 {
+            aspect-ratio: 16 / 9;
+        }
+        
+        .aspect-ratio-4-3 {
+            aspect-ratio: 4 / 3;
+        }
+        
+        .aspect-ratio-1-1 {
+            aspect-ratio: 1 / 1;
+        }
+        
+        /* Fallback for older browsers */
+        @supports not (aspect-ratio: 16 / 9) {
+            .aspect-ratio-16-9::before {
+                content: '';
+                display: block;
+                padding-top: 56.25%; /* 16:9 aspect ratio */
+            }
+        }
+        
+        @supports not (aspect-ratio: 4 / 3) {
+            .aspect-ratio-4-3::before {
+                content: '';
+                display: block;
+                padding-top: 75%; /* 4:3 aspect ratio */
+            }
+        }
+        
+        @supports not (aspect-ratio: 1 / 1) {
+            .aspect-ratio-1-1::before {
+                content: '';
+                display: block;
+                padding-top: 100%; /* 1:1 aspect ratio */
+            }
+        }
+        
+        /* Image Optimization */
+        .card-img-top {
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+        
+        /* High DPI Display Support */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .high-dpi-img {
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
+            }
+        }
+        
+        /* Print Styles */
+        @media print {
+            picture, img {
+                max-width: 100% !important;
+                height: auto !important;
+                page-break-inside: avoid;
+            }
+        }
+        
+        /* Ripple Effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+        
+        /* Loading Animation */
+        .btn.loading {
+            position: relative;
+            color: transparent !important;
+        }
+        
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #e91e63, #ff6b35);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(45deg, #c2185b, #e65100);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+
+    <!-- Schema.org микроразметка -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Restaurant",
+        "name": "PizzaMaster",
+        "image": "{% static 'img/logo.png' %}",
+        "servesCuisine": "Italian",
+        "priceRange": "$$",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "ул. Пиццы, 1",
+            "addressLocality": "Минск",
+            "addressCountry": "BY"
+        },
+        "openingHours": "Mo-Su 10:00-23:00",
+        "telephone": "+375291234567"
+    }
+    </script>
+</head>
+<body class="d-flex flex-column h-100" translate="yes" itemscope itemtype="https://schema.org/Restaurant" spellcheck="true" tabindex="0" role="document" id="main-body">
+    <!-- Main Content Wrapper -->
+    <div id="mainContentWrapper">
+    
+    <!-- Глобальный прелоадер для всех страниц -->
+    <div class="global-preloader" id="globalPreloader" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 99999; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); display: flex !important; align-items: center; justify-content: center; opacity: 1 !important;">
+        <div class="preloader-content" style="position: relative; width: 200px; height: 200px;">
+            <div class="preloader-circle-1"></div>
+            <div class="preloader-circle-2"></div>
+            <div class="preloader-line-1"></div>
+            <div class="preloader-line-2"></div>
+            <div class="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div style="position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); color: white; font-weight: 600; text-align: center; white-space: nowrap;">
+                Загрузка страницы...
+            </div>
+        </div>
+    </div>
+    
+    <!-- Шапка сайта -->
+    <header class="navbar" role="banner" itemprop="name" id="main-header">
+        <div class="container" id="header-container">
+            <nav class="navbar navbar-expand-lg navbar-dark" role="navigation" aria-label="Основная навигация" id="main-nav">
+            
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+
+
+                    <ul class="nav inline-list col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0 ms-3" role="menubar" aria-label="Основное меню">
+                        <li class="company-logo" style="top: auto; position: relative; top: 40px;">
+                            <img class="company-logo" src="{% static 'img/logo.png' %}">
+                        </li>
+                        <!-- Основные разделы -->
+                        <li role="none"><a href="{% url 'pizzeria:home' %}" class="nav-link px-2" aria-current="page" title="Главная страница" tabindex="2" role="menuitem">Главная</a></li>
+                        <li role="none"><a href="{% url 'pizzeria:menu' %}" class="nav-link px-2" title="Меню пиццерии" tabindex="3" role="menuitem">Меню</a></li>
+                        <li role="none"><a href="{% url 'pizzeria:promotions' %}" class="nav-link px-2" title="Акции и скидки" tabindex="4" role="menuitem">Акции</a></li>
+                        
+                        <!-- О компании -->
+                        <li class="nav-item dropdown" role="none">
+                            <a class="nav-link dropdown-toggle px-2" href="#" role="button" aria-expanded="false" title="Информация о компании" tabindex="5" role="menuitem" aria-haspopup="true">
+                                О компании
+                            </a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="aboutCompanyDropdown">
+                                <li role="none"><a class="dropdown-item" href="{% url 'pizzeria:about' %}" title="О нашей пиццерии" tabindex="6" role="menuitem">О нас</a></li>
+                                <li role="none"><a class="dropdown-item" href="{% url 'pizzeria:contacts' %}" title="Контактная информация" tabindex="7" role="menuitem">Контакты</a></li>
+                                <li role="none"><a class="dropdown-item" href="{% url 'pizzeria:staff' %}" title="Наша команда" tabindex="8" role="menuitem">Наша команда</a></li>
+                                <li role="none"><a class="dropdown-item" href="{% url 'pizzeria:vacancies' %}" title="Открытые вакансии" tabindex="9" role="menuitem">Вакансии</a></li>
+                                <li role="separator"><hr class="dropdown-divider"></li>
+                                <li role="none"><a class="dropdown-item" href="{% url 'pizzeria:privacy' %}" title="Политика конфиденциальности" tabindex="10" role="menuitem">Политика конфиденциальности</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Информация -->
+                        <li class="nav-item dropdown" role="none">
+                            <a class="nav-link dropdown-toggle px-2" href="#" role="button" aria-expanded="false" title="Полезная информация" tabindex="11" role="menuitem" aria-haspopup="true">
+                                Информация
+                            </a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="infoDropdown">
+                                <li role="none"><a class="dropdown-item" href="{% url 'pizzeria:news_list' %}" title="Новости пиццерии" tabindex="12" role="menuitem">Новости</a></li>
+                                <li role="none"><a class="dropdown-item" href="{% url 'pizzeria:glossary' %}" title="Словарь терминов" tabindex="13" role="menuitem">Словарь терминов</a></li>
+                                <li role="none"><a class="dropdown-item" href="{% url 'pizzeria:faq' %}" title="Часто задаваемые вопросы" tabindex="14" role="menuitem">FAQ</a></li>
+                                <li role="separator"><hr class="dropdown-divider"></li>
+                                <li role="none"><a class="dropdown-item" href="{% url 'pizzeria:promo_codes' %}" title="Промокоды и скидки" tabindex="15" role="menuitem">Промокоды</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- Отзывы -->
+                        <li role="none"><a href="{% url 'pizzeria:reviews' %}" class="nav-link px-2" title="Отзывы клиентов" tabindex="16" role="menuitem">Отзывы</a></li>
+
+                        <!-- Корзина для авторизованных пользователей -->
+                        {% if user.is_authenticated %}
+                            <li role="none"><a href="{% url 'pizzeria:cart' %}" class="nav-link px-2" title="Корзина покупок" tabindex="17" role="menuitem">
+                                <i class="fas fa-shopping-cart" aria-hidden="true"></i> Корзина
+                            </a></li>
+                    {% endif %}
+                </ul>
+
+                    <div class="text-end d-flex align-items-center" role="group" aria-label="Пользовательское меню" id="user-menu">
+                        <!-- Theme Toggle Switch -->
+                        <div class="theme-toggle-container me-3">
+                            <button type="button" 
+                                    class="btn btn-outline-light theme-toggle-btn" 
+                                    id="themeToggle"
+                                    title="Переключить тему"
+                                    aria-label="Переключить тему"
+                                    tabindex="20">
+                                <i class="fas fa-sun" id="themeIcon"></i>
+                            </button>
+                        </div>
+                        
+                        {% if user.is_authenticated %}
+                            <span class="me-2" style="color: #800080 !important;" title="Текущий пользователь" id="current-user" aria-label="Пользователь: {{ user.username }}">{{ user.username }}</span>
+                            <a href="{% url 'pizzeria:profile' %}" class="btn btn-outline-light me-2" title="Личный кабинет" tabindex="18" role="button">Профиль</a>
+                            <a href="{% url 'pizzeria:logout' %}" class="btn btn-outline-light me-2" title="Выйти из системы" tabindex="19" role="button">Выйти</a>
+                        {% else %}
+                            <a href="{% url 'pizzeria:login' %}" class="btn btn-outline-light me-2" title="Войти в систему" tabindex="18" role="button">Войти</a>
+                            <a href="{% url 'pizzeria:register' %}" class="btn btn-primary" title="Зарегистрироваться" tabindex="19" role="button">Регистрация</a>
+                        {% endif %}
+                    </div>
+            </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Сообщения -->
+    {% if messages %}
+    <div class="container mt-3" role="alert" aria-live="polite">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" aria-label="Закрыть"></button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Основной контент -->
+    <main class="flex-shrink-0" role="main" id="main-content" tabindex="-1" aria-label="Основной контент страницы" style="margin-top: var(--header-height);">
+        <div class="container py-4" id="main-container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-4" id="time-info" role="complementary" aria-label="Информация о времени">
+                        <div>
+                            <p class="mb-0" style="color: #800080 !important;" title="Текущее время в вашем часовом поясе" id="local-time">
+                                <time datetime="{{ local_time_iso }}" itemprop="datePublished">
+                                    Дата и время ({{ user_timezone }}): {{ local_time_str }}
+                                </time>
+                            </p>
+                            <p class="mb-0" style="color: #800080 !important;" title="Текущее время по UTC" id="utc-time">
+                                <time datetime="{{ utc_time_iso }}" itemprop="dateModified">
+                                    Дата и время (UTC): {{ utc_time_str }}
+                                </time>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+        
+
+    <!-- Подвал -->
+    <footer class="footer mt-auto py-3 bg-dark text-white" role="contentinfo" id="footer">
+        <div class="container" id="footer-container">
+            <div class="row">
+                <!-- О компании -->
+                <div class="col-md-3 mb-3" id="footer-about-section">
+                    <h5 class="text-white mb-3" id="footer-about" title="Раздел о компании">О компании</h5>
+                    <ul class="nav flex-column inline-list" role="list" aria-label="Ссылки о компании">
+                        <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:about' %}" class="nav-link px-2" title="О нашей пиццерии" tabindex="20">О нас</a></li>
+                        <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:contacts' %}" class="nav-link px-2" title="Контактная информация" tabindex="21">Контакты</a></li>
+                        <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:staff' %}" class="nav-link px-2" title="Наша команда" tabindex="22">Наша команда</a></li>
+                        <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:vacancies' %}" class="nav-link px-2" title="Открытые вакансии" tabindex="23">Вакансии</a></li>
+                    </ul>
+                </div>
+
+                <!-- Меню -->
+                <div class="col-md-3 mb-3" id="footer-menu-section">
+                    <h5 class="text-white mb-3" id="footer-menu" title="Раздел меню">Меню</h5>
+                    <ul class="nav flex-column inline-list" role="list" aria-label="Ссылки меню">
+                        <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:menu' %}" class="nav-link px-2" title="Все пиццы" tabindex="24">Все пиццы</a></li>
+                        <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:promotions' %}" class="nav-link px-2" title="Акции и скидки" tabindex="25">Акции</a></li>
+                        <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:promo_codes' %}" class="nav-link px-2" title="Промокоды и купоны" tabindex="26">Промокоды</a></li>
+                    </ul>
+                </div>
+
+                <!-- Информация -->
+                <div class="col-md-3 mb-3" id="footer-info-section">
+                    <h5 class="text-white mb-3" id="footer-info" title="Раздел информации">Информация</h5>
+                    <ul class="nav flex-column inline-list" role="list" aria-label="Информационные ссылки">
+                        <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:news_list' %}" class="nav-link px-2" title="Новости пиццерии" tabindex="27">Новости</a></li>
+                        <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:glossary' %}" class="nav-link px-2" title="Словарь терминов" tabindex="28">Словарь терминов</a></li>
+                        <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:faq' %}" class="nav-link px-2" title="Часто задаваемые вопросы" tabindex="29">FAQ</a></li>
+                        <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:reviews' %}" class="nav-link px-2" title="Отзывы клиентов" tabindex="30">Отзывы</a></li>
+                        <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:privacy' %}" class="nav-link px-2" title="Политика конфиденциальности" tabindex="31">Политика конфиденциальности</a></li>
+                    </ul>
+                </div>
+
+                <!-- Контакты -->
+                <div class="col-md-3 mb-3" id="footer-contacts-section">
+                    <h5 class="text-white mb-3" id="footer-contacts" title="Раздел контактов">Контакты</h5>
+                    <ul class="nav flex-column inline-list" role="list" aria-label="Контактная информация">
+                        <li class="nav-item" role="listitem"><a href="tel:+375291234567" class="nav-link px-2" title="Позвонить нам" tabindex="32" itemprop="telephone">+375 (29) 123-45-67</a></li>
+                        <li class="nav-item" role="listitem"><a href="mailto:info@pizzamaster.by" class="nav-link px-2" title="Написать нам" tabindex="33" itemprop="email">info@pizzamaster.by</a></li>
+                        <li class="nav-item" role="listitem"><span class="nav-link px-2" title="Наш адрес" tabindex="34" itemprop="address">ул. Пиццы, 1, Минск</span></li>
+                    </ul>
+                    <div class="mt-3" id="social-links" role="group" aria-label="Социальные сети">
+                        <a href="#" class="text-white me-3" title="Facebook" aria-label="Facebook" tabindex="35" role="button"><i class="fab fa-facebook" aria-hidden="true"></i></a>
+                        <a href="#" class="text-white me-3" title="Instagram" aria-label="Instagram" tabindex="36" role="button"><i class="fab fa-instagram" aria-hidden="true"></i></a>
+                        <a href="#" class="text-white" title="Telegram" aria-label="Telegram" tabindex="37" role="button"><i class="fab fa-telegram" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="border-secondary">
+            <pre><code>
+                function greet(name) {
+                  return `Hello, ${name}!`;
+                }
+             </code></pre>
+            <!-- Нижняя навигация -->
+            <nav role="navigation" aria-label="Нижняя навигация" id="footer-nav">
+                <ul class="nav justify-content-center pb-3" role="list" aria-label="Дополнительная навигация">
+                    <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:home' %}" class="nav-link px-2" title="Главная страница" tabindex="38">Главная</a></li>
+                    <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:menu' %}" class="nav-link px-2" title="Меню пиццерии" tabindex="39">Меню</a></li>
+                    <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:about' %}" class="nav-link px-2" title="О нашей пиццерии" tabindex="40">О нас</a></li>
+                    <li class="nav-item" role="listitem"><a href="{% url 'pizzeria:contacts' %}" class="nav-link px-2" title="Контактная информация" tabindex="41">Контакты</a></li>
+            </ul>
+            </nav>
+            <p class="text-center" style="color: #800080 !important;" id="copyright" title="Информация об авторских правах">
+                <small>© <time datetime="{{ year }}" itemprop="copyrightYear">{{ year }}</time> Пиццерия. Все права защищены.</small>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/theme-toggle.js' %}"></script>
+    <script src="{% static 'js/bootstrap-replacement.js' %}"></script>
+    <script>
+    </script>
+    <script>
+        // Глобальный прелоадер - скрывается через 1 секунду
+        (function() {
+            const startTime = Date.now();
+            
+            function hidePreloader() {
+                const preloader = document.getElementById('globalPreloader');
+                if (preloader) {
+                    preloader.style.transition = 'opacity 0.3s ease-out';
+                    preloader.style.opacity = '0';
+                    setTimeout(function() {
+                        if (preloader) {
+                            preloader.style.display = 'none';
+                            preloader.style.visibility = 'hidden';
+                        }
+                    }, 300);
+                }
+            }
+            
+            // Скрываем прелоадер ровно через 1 секунду
+            setTimeout(function() {
+                hidePreloader();
+            }, 1000);
+        })();
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Определение часового пояса пользователя
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.cookie = `user_timezone=${timezone}; path=/; max-age=31536000; SameSite=Lax`;
+            
+            // Responsive Images Enhancement
+            initResponsiveImages();
+            
+            // Modern UI Enhancements
+            initModernUI();
+            
+            // Scroll animations
+            initScrollAnimations();
+            
+            // Navbar scroll effect
+            initNavbarScroll();
+        });
+        
+        // Modern UI Enhancements
+        function initModernUI() {
+            // Loading animation removed - using global preloader instead
+            
+            // Add ripple effect to cards
+            const cards = document.querySelectorAll('.card, .pizza-card');
+            cards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    const rect = this.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        }
+        
+        // Scroll animations
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe elements with scroll-animate class
+            document.querySelectorAll('.scroll-animate').forEach(el => {
+                observer.observe(el);
+            });
+        }
+        
+        // Navbar scroll effect
+        function initNavbarScroll() {
+            const navbar = document.querySelector('.navbar');
+            let lastScrollTop = 0;
+            
+            window.addEventListener('scroll', function() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (scrollTop > 100) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                
+                lastScrollTop = scrollTop;
+            });
+        }
+        
+        // Responsive Images Functions
+        function initResponsiveImages() {
+            // Lazy loading enhancement
+            const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+            
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            img.classList.add('loaded');
+                            observer.unobserve(img);
+                        }
+                    });
+                });
+                
+                lazyImages.forEach(img => imageObserver.observe(img));
+            } else {
+                // Fallback for older browsers
+                lazyImages.forEach(img => {
+                    img.classList.add('loaded');
+                });
+            }
+            
+            // Image error handling
+            const allImages = document.querySelectorAll('img');
+            allImages.forEach(img => {
+                img.addEventListener('error', function() {
+                    this.style.display = 'none';
+                    console.warn('Image failed to load:', this.src);
+                });
+            });
+            
+            // Picture element fallback
+            const pictures = document.querySelectorAll('picture');
+            pictures.forEach(picture => {
+                const img = picture.querySelector('img');
+                if (img) {
+                    img.addEventListener('load', function() {
+                        this.classList.add('loaded');
+                    });
+                }
+            });
+        }
+        
+        // Utility function to preload images
+        function preloadImage(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = src;
+            });
+        }
+        
+        // Function to get appropriate image size based on viewport
+        function getImageSize() {
+            const width = window.innerWidth;
+            if (width >= 1200) return 'large';
+            if (width >= 768) return 'medium';
+            return 'small';
+        }
+        
+        // Function to update image sources based on viewport
+        function updateImageSources() {
+            const pictures = document.querySelectorAll('picture');
+            pictures.forEach(picture => {
+                const sources = picture.querySelectorAll('source');
+                const img = picture.querySelector('img');
+                
+                if (sources.length > 0 && img) {
+                    const currentSize = getImageSize();
+                    const appropriateSource = Array.from(sources).find(source => {
+                        const media = source.getAttribute('media');
+                        if (currentSize === 'large') return media === '(min-width: 1200px)';
+                        if (currentSize === 'medium') return media === '(min-width: 768px)';
+                        return media === '(max-width: 767px)';
+                    });
+                    
+                    if (appropriateSource) {
+                        const srcset = appropriateSource.getAttribute('srcset');
+                        if (srcset) {
+                            img.src = srcset.split(',')[0].split(' ')[0];
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update images on resize - handled by bootstrap-replacement.js
+        // resizeTimeout is already declared there, so we don't redeclare it here
+    </script>
+    {% block extra_js %}{% endblock %}
+    
+    </div>
+</body>
+</html> 

@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Услуги{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Наши услуги</h1>
+            <p class="lead mb-3">Выберите услугу, и мы подберем для вас лучшего специалиста.</p>
+            
+            <!-- Search form -->
+            <form method="get" class="mb-4">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control" placeholder="Поиск по названию услуги" value="{{ search_query }}">
+                    <button class="btn btn-primary" type="submit">Найти</button>
+                    {% if search_query %}
+                        <a href="{% url 'pizzeria:services_list' %}" class="btn btn-secondary">Сбросить</a>
+                    {% endif %}
+                </div>
+            </form>
+            
+            <!-- Sorting options -->
+            <div class="mb-4">
+                <h5>Сортировка:</h5>
+                <div class="btn-group">
+                    <a href="{% url 'pizzeria:services_list' %}?search={{ search_query }}&sort_by=price_asc" class="btn btn-outline-secondary {% if sort_by == 'price_asc' %}active{% endif %}">
+                        По цене (возрастание)
+                    </a>
+                    <a href="{% url 'pizzeria:services_list' %}?search={{ search_query }}&sort_by=price_desc" class="btn btn-outline-secondary {% if sort_by == 'price_desc' %}active{% endif %}">
+                        По цене (убывание)
+                    </a>
+                    <a href="{% url 'pizzeria:services_list' %}?search={{ search_query }}&sort_by=name_asc" class="btn btn-outline-secondary {% if sort_by == 'name_asc' %}active{% endif %}">
+                        По алфавиту (А-Я)
+                    </a>
+                    <a href="{% url 'pizzeria:services_list' %}?search={{ search_query }}&sort_by=name_desc" class="btn btn-outline-secondary {% if sort_by == 'name_desc' %}active{% endif %}">
+                        По алфавиту (Я-А)
+                    </a>
+                </div>
+                {% if sort_by %}
+                    <a href="{% url 'pizzeria:services_list' %}{% if search_query %}?search={{ search_query }}{% endif %}" class="btn btn-sm btn-link ml-2">
+                        Сбросить сортировку
+                    </a>
+                {% endif %}
+            </div>
+            
+            {% if search_query %}
+                <div class="alert alert-info mb-3">
+                    Результаты поиска для: <strong>{{ search_query }}</strong>
+                    {% if services|length == 0 %}
+                        <span>(услуги не найдены)</span>
+                    {% else %}
+                        <span>(найдено: {{ services|length }})</span>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if services %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+            {% for service in services %}
+                <div class="col">
+                    <div class="card h-100">
+                        {% if service.image %}
+                            <img src="{{ service.image.url }}" class="card-img-top" alt="{{ service.name }}" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <h3>{{ service.name }}</h3>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ service.name }}</h5>
+                            <p class="card-text">{{ service.description|truncatewords:20 }}</p>
+                            <p class="card-text"><strong>Цена от: </strong>{{ service.price }} руб.</p>
+                        </div>
+                        <div class="card-footer">
+                            <a href="{% url 'pizzeria:service_masters' service.id %}" class="btn btn-primary">Выбрать</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info">
+                    {% if search_query %}
+                        По вашему запросу ничего не найдено. Пожалуйста, попробуйте другой запрос.
+                    {% else %}
+                        В настоящее время информация об услугах отсутствует. Пожалуйста, зайдите позже.
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

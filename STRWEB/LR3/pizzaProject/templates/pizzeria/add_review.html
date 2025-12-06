@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Добавить отзыв - Пиццерия{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12 col-md-8 mx-auto">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'pizzeria:home' %}">Главная</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'pizzeria:reviews' %}">Отзывы</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Добавить отзыв</li>
+                </ol>
+            </nav>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="h4 mb-0">Оставить отзыв</h1>
+                </div>
+                <div class="card-body">
+                    <form method="post" class="review-form">
+                        {% csrf_token %}
+                        
+                        <div class="mb-4">
+                            <label class="form-label">Оценка</label>
+                            <div class="rating-stars mb-2">
+                                {% for i in "12345"|make_list %}
+                                <input type="radio" name="rating" value="{{ i }}" id="star{{ i }}" 
+                                       {% if form.rating.value == i %}checked{% endif %} required>
+                                <label for="star{{ i }}" title="{{ i }} звезд">
+                                    <i class="fas fa-star"></i>
+                                </label>
+                                {% endfor %}
+                            </div>
+                            {% if form.rating.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.rating.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="{{ form.text.id_for_label }}" class="form-label">Ваш отзыв</label>
+                            <textarea name="text" id="{{ form.text.id_for_label }}" 
+                                      class="form-control" rows="5" required
+                                      placeholder="Поделитесь своими впечатлениями...">{{ form.text.value|default:'' }}</textarea>
+                            {% if form.text.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.text.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="{% url 'pizzeria:reviews' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Назад
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Отправить отзыв
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .rating-stars {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+    
+    .rating-stars input {
+        display: none;
+    }
+    
+    .rating-stars label {
+        cursor: pointer;
+        padding: 0 0.2em;
+        font-size: 2rem;
+        color: #ddd;
+    }
+    
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label,
+    .rating-stars input:checked ~ label {
+        color: #ffd700;
+    }
+    
+    .rating-stars label:hover i,
+    .rating-stars label:hover ~ label i,
+    .rating-stars input:checked ~ label i {
+        transform: scale(1.1);
+    }
+    
+    .rating-stars i {
+        transition: transform 0.2s, color 0.2s;
+    }
+    
+    .card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        border-bottom: none;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        border: none;
+        transition: transform 0.2s;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+    }
+</style>
+{% endblock %}

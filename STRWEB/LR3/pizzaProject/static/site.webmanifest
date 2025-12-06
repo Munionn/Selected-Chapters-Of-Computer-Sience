@@ -1,0 +1,23 @@
+{
+    "name": "Пиццерия",
+    "short_name": "Пиццерия",
+    "description": "Лучшая пиццерия в городе с доставкой",
+    "icons": [
+        {
+            "src": "/static/img/logo.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/img/logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#800080",
+    "background_color": "#ffffff",
+    "display": "standalone",
+    "start_url": "/",
+    "scope": "/"
+}
+

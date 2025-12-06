@@ -1,0 +1,231 @@
+{% extends 'pizzeria/admin/base_admin.html' %}
+
+{% block admin_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Управление клиентами</h1>
+</div>
+
+<!-- Stats Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stats-card">
+            <div class="icon bg-primary">
+                <i class="fas fa-users"></i>
+            </div>
+            <h3>{{ total_customers }}</h3>
+            <p>Всего клиентов</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stats-card">
+            <div class="icon bg-success">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <h3>{{ active_customers }}</h3>
+            <p>Активных клиентов</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stats-card">
+            <div class="icon bg-info">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+            <h3>{{ total_revenue }} Br</h3>
+            <p>Общая выручка</p>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="filters-section mb-4">
+    <form method="get" class="row g-3">
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" class="form-control" name="search" value="{{ search_query }}" placeholder="Поиск по имени, телефону...">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select name="sort" class="form-select">
+                <option value="created_at" {% if sort_by == 'created_at' %}selected{% endif %}>По дате регистрации</option>
+                <option value="name" {% if sort_by == 'name' %}selected{% endif %}>По имени</option>
+                <option value="orders" {% if sort_by == 'orders' %}selected{% endif %}>По количеству заказов</option>
+                <option value="spent" {% if sort_by == 'spent' %}selected{% endif %}>По сумме заказов</option>
+                <option value="avg_order" {% if sort_by == 'avg_order' %}selected{% endif %}>По среднему чеку</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select name="order" class="form-select">
+                <option value="desc" {% if order == 'desc' %}selected{% endif %}>По убыванию</option>
+                <option value="asc" {% if order == 'asc' %}selected{% endif %}>По возрастанию</option>
+            </select>
+        </div>
+    </form>
+</div>
+
+<!-- Customers Table -->
+<div class="data-table table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Клиент</th>
+                <th>Контакты</th>
+                <th>Заказов</th>
+                <th>Сумма заказов</th>
+                <th>Средний чек</th>
+                <th>Бонусы</th>
+                <th>Регистрация</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in customers %}
+            <tr>
+                <td>
+                    <div>{{ customer.user.get_full_name }}</div>
+                    <small class="text-muted">@{{ customer.user.username }}</small>
+                </td>
+                <td>
+                    <div>{{ customer.phone_number }}</div>
+                    <small class="text-muted">{{ customer.user.email }}</small>
+                </td>
+                <td>{{ customer.orders_count }}</td>
+                <td>{{ customer.total_spent|default:0 }} Br</td>
+                <td>{{ customer.avg_order_value|default:0 }} Br</td>
+                <td>{{ customer.bonus_points }}</td>
+                <td>{{ customer.created_at|date:"d.m.Y" }}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="viewCustomer({{ customer.id }})" data-toggle="tooltip" title="Просмотр">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center py-4">
+                    <div class="text-muted">
+                        <i class="fas fa-users fa-2x mb-3"></i>
+                        <p class="mb-0">Клиенты не найдены</p>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination -->
+{% if customers.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if customers.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ customers.previous_page_number }}&search={{ search_query }}&sort={{ sort_by }}&order={{ order }}">
+                <i class="fas fa-chevron-left"></i>
+            </a>
+        </li>
+        {% endif %}
+
+        {% for num in customers.paginator.page_range %}
+        <li class="page-item {% if num == customers.number %}active{% endif %}">
+            <a class="page-link" href="?page={{ num }}&search={{ search_query }}&sort={{ sort_by }}&order={{ order }}">
+                {{ num }}
+            </a>
+        </li>
+        {% endfor %}
+
+        {% if customers.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?page={{ customers.next_page_number }}&search={{ search_query }}&sort={{ sort_by }}&order={{ order }}">
+                <i class="fas fa-chevron-right"></i>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<!-- Customer Details Modal -->
+<div class="modal fade" id="viewCustomerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Информация о клиенте</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6>Основная информация</h6>
+                        <p class="mb-1"><strong>ФИО:</strong> <span id="customerName"></span></p>
+                        <p class="mb-1"><strong>Логин:</strong> <span id="customerUsername"></span></p>
+                        <p class="mb-1"><strong>Email:</strong> <span id="customerEmail"></span></p>
+                        <p class="mb-1"><strong>Телефон:</strong> <span id="customerPhone"></span></p>
+                        <p class="mb-1"><strong>Адрес:</strong> <span id="customerAddress"></span></p>
+                        <p class="mb-1"><strong>Дата рождения:</strong> <span id="customerBirthDate"></span></p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Статистика</h6>
+                        <p class="mb-1"><strong>Дата регистрации:</strong> <span id="customerCreatedAt"></span></p>
+                        <p class="mb-1"><strong>Всего заказов:</strong> <span id="customerOrdersCount"></span></p>
+                        <p class="mb-1"><strong>Сумма заказов:</strong> <span id="customerTotalSpent"></span> Br</p>
+                        <p class="mb-1"><strong>Бонусные баллы:</strong> <span id="customerBonusPoints"></span></p>
+                    </div>
+                </div>
+
+                <h6>Последние заказы</h6>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Дата</th>
+                                <th>Статус</th>
+                                <th>Сумма</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customerRecentOrders"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script>
+function viewCustomer(customerId) {
+    fetch(`/shop/api/customers/${customerId}/`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('customerName').textContent = data.full_name;
+            document.getElementById('customerUsername').textContent = data.username;
+            document.getElementById('customerEmail').textContent = data.email;
+            document.getElementById('customerPhone').textContent = data.phone_number;
+            document.getElementById('customerAddress').textContent = data.address;
+            document.getElementById('customerBirthDate').textContent = data.birth_date || 'Не указана';
+            document.getElementById('customerCreatedAt').textContent = data.created_at;
+            document.getElementById('customerOrdersCount').textContent = data.orders_count;
+            document.getElementById('customerTotalSpent').textContent = data.total_spent;
+            document.getElementById('customerBonusPoints').textContent = data.bonus_points;
+
+            const ordersHtml = data.recent_orders.map(order => `
+                <tr>
+                    <td>#${order.id}</td>
+                    <td>${order.date}</td>
+                    <td>${order.status}</td>
+                    <td>${order.total} Br</td>
+                </tr>
+            `).join('');
+            document.getElementById('customerRecentOrders').innerHTML = ordersHtml;
+
+            $('#viewCustomerModal').modal('show');
+        });
+}
+</script>
+{% endblock %} 

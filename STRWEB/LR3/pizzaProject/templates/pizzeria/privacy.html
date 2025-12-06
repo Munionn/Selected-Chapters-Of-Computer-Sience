@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Политика конфиденциальности - Пиццерия{% endblock %}
+
+{% block meta_description %}Политика конфиденциальности пиццерии. Информация о том, как мы собираем, используем и защищаем ваши персональные данные.{% endblock %}
+{% block meta_keywords %}политика конфиденциальности, защита данных, персональные данные, пиццерия{% endblock %}
+
+{% block content %}
+<main class="container py-5">
+    <article>
+        <header class="mb-5">
+            <h1>Политика конфиденциальности</h1>
+            <p class="lead">Последнее обновление: {% now "d.m.Y" %}</p>
+        </header>
+
+        <section class="mb-5">
+            <h2>1. Введение</h2>
+            <p>Мы, пиццерия "{{ company.name }}", уважаем вашу конфиденциальность и стремимся защитить ваши персональные данные. В этой политике конфиденциальности объясняется, как мы собираем, используем и защищаем вашу личную информацию при использовании нашего веб-сайта и услуг.</p>
+        </section>
+
+        <section class="mb-5">
+            <h2>2. Какую информацию мы собираем</h2>
+            <p>Мы собираем следующие типы информации:</p>
+            <ul>
+                <li>Контактная информация (имя, email, телефон)</li>
+                <li>Адрес доставки</li>
+                <li>История заказов</li>
+                <li>Отзывы и оценки</li>
+                <li>Информация о предпочтениях в еде</li>
+                <li>Техническая информация (IP-адрес, cookies)</li>
+            </ul>
+        </section>
+
+        <section class="mb-5">
+            <h2>3. Как мы используем вашу информацию</h2>
+            <p>Мы используем собранную информацию для:</p>
+            <ul>
+                <li>Обработки и доставки ваших заказов</li>
+                <li>Связи с вами по поводу заказов и акций</li>
+                <li>Улучшения качества наших услуг</li>
+                <li>Персонализации вашего опыта</li>
+                <li>Анализа и улучшения нашего сервиса</li>
+            </ul>
+        </section>
+
+        <section class="mb-5">
+            <h2>4. Защита данных</h2>
+            <p>Мы принимаем следующие меры для защиты ваших данных:</p>
+            <ul>
+                <li>Шифрование данных при передаче</li>
+                <li>Безопасное хранение данных</li>
+                <li>Регулярное обновление систем безопасности</li>
+                <li>Ограниченный доступ к персональным данным</li>
+            </ul>
+        </section>
+
+        <section class="mb-5">
+            <h2>5. Cookies</h2>
+            <p>Мы используем cookies для:</p>
+            <ul>
+                <li>Сохранения данных корзины</li>
+                <li>Запоминания ваших предпочтений</li>
+                <li>Анализа использования сайта</li>
+                <li>Улучшения пользовательского опыта</li>
+            </ul>
+        </section>
+
+        <section class="mb-5">
+            <h2>6. Ваши права</h2>
+            <p>Вы имеете право:</p>
+            <ul>
+                <li>Получить доступ к своим данным</li>
+                <li>Исправить неточные данные</li>
+                <li>Удалить свои данные</li>
+                <li>Ограничить обработку данных</li>
+                <li>Возразить против обработки данных</li>
+            </ul>
+        </section>
+
+        <section class="mb-5">
+            <h2>7. Контакты</h2>
+            <p>Если у вас есть вопросы о нашей политике конфиденциальности, вы можете связаться с нами:</p>
+            <address>
+                <p><strong>Email:</strong> <a href="mailto:{{ company.email }}">{{ company.email }}</a></p>
+                <p><strong>Телефон:</strong> <a href="tel:{{ company.phone }}">{{ company.phone }}</a></p>
+                <p><strong>Адрес:</strong> {{ company.address }}</p>
+            </address>
+        </section>
+
+        <footer class="border-top pt-4 mt-5">
+            <p class="text-muted"><small>© {% now "Y" %} {{ company.name }}. Все права защищены.</small></p>
+        </footer>
+    </article>
+</main>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    article {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    h2 {
+        font-size: 1.75rem;
+        margin-bottom: 1rem;
+        color: #007bff;
+    }
+    
+    .lead {
+        color: #6c757d;
+    }
+    
+    section {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    section:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+    }
+    
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    
+    ul li {
+        padding: 0.5rem 0;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+    
+    ul li::before {
+        content: "•";
+        color: #007bff;
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+    }
+    
+    address {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 5px;
+        margin-top: 1rem;
+    }
+    
+    address a {
+        color: #007bff;
+        text-decoration: none;
+    }
+    
+    address a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}

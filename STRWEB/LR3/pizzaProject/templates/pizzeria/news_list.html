@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Новости - Пиццерия{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Новости и статьи</h1>
+    
+    <div class="row">
+        {% for article in articles %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if article.image %}
+                <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ article.title }}</h5>
+                    <p class="card-text text-muted">
+                        <small>{{ article.created_at|date:"d.m.Y" }}</small>
+                    </p>
+                    <div class="article-preview">
+                        <p class="card-text">{{ article.short_description }}</p>
+                    </div>
+                    <a href="{% url 'pizzeria:article_detail' article.id %}" class="btn btn-primary">
+                        Читать далее
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                На данный момент новостей нет.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% block extra_css %}
+<style>
+    /* Принудительное двухколоночное отображение */
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    
+    .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    
+    @media (max-width: 768px) {
+        .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
+    
+    .card {
+        transition: transform 0.2s;
+        margin-bottom: 1rem;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+    .pagination .page-link {
+        color: #007bff;
+    }
+    .pagination .active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% endblock %} 

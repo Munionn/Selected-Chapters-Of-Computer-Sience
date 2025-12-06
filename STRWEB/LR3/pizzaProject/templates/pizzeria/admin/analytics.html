@@ -1,0 +1,427 @@
+{% extends 'pizzeria/admin/base_admin.html' %}
+
+{% block extra_css %}
+{{ block.super }}
+<link href="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.css" rel="stylesheet">
+<style>
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+.stats-card {
+    height: 100%;
+    background: #fff;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.stats-card .icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.stats-card .icon i {
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.stats-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.stats-card p {
+    color: #6c757d;
+    margin: 0;
+}
+
+.card {
+    height: 100%;
+    margin-bottom: 0;
+}
+
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.table th {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 1;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 250px;
+    }
+}
+</style>
+{% endblock %}
+
+{% block admin_content %}
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Аналитика</h1>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-primary" onclick="updateCharts('week')">Неделя</button>
+            <button type="button" class="btn btn-outline-primary" onclick="updateCharts('month')">Месяц</button>
+            <button type="button" class="btn btn-outline-primary" onclick="updateCharts('year')">Год</button>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="icon bg-primary">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>{{ total_revenue }} Br</h3>
+                <p>Общая выручка</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="icon bg-success">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h3>{{ total_orders }}</h3>
+                <p>Всего заказов</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="icon bg-info">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>{{ total_customers }}</h3>
+                <p>Клиентов</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card">
+                <div class="icon bg-warning">
+                    <i class="fas fa-pizza-slice"></i>
+                </div>
+                <h3>{{ avg_order_value }} Br</h3>
+                <p>Средний чек</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Динамика продаж</h5>
+                    <div class="chart-container">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Популярные пиццы</h5>
+                    <div class="chart-container">
+                        <canvas id="topPizzasChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Способы оплаты</h5>
+                    <div class="chart-container">
+                        <canvas id="paymentMethodsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Статусы заказов</h5>
+                    <div class="chart-container">
+                        <canvas id="orderStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Customers Table -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-4">Лучшие клиенты</h5>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Клиент</th>
+                            <th>Заказов</th>
+                            <th>Сумма</th>
+                            <th>Средний чек</th>
+                            <th>Последний заказ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in top_customers %}
+                        <tr>
+                            <td>
+                                <div>{{ customer.user.get_full_name }}</div>
+                                <small class="text-muted">{{ customer.phone_number }}</small>
+                            </td>
+                            <td>{{ customer.orders_count }}</td>
+                            <td>{{ customer.total_spent }} Br</td>
+                            <td>{{ customer.avg_order_value }} Br</td>
+                            <td>{{ customer.last_order_date|date:"d.m.Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sauce Analysis -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title mb-4">Анализ по соусам</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <canvas id="saucePopularityChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Соус</th>
+                                    <th>Количество пицц</th>
+                                    <th>Продаж</th>
+                                    <th>Выручка</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for sauce in sauce_analysis %}
+                                <tr>
+                                    <td>{{ sauce.name }}</td>
+                                    <td>{{ sauce.pizzas_count }}</td>
+                                    <td>{{ sauce.orders_count }}</td>
+                                    <td>{{ sauce.revenue }} Br</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ block.super }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+<script>
+// Общие настройки для графиков
+Chart.defaults.font.family = "'Inter', 'Helvetica', 'Arial', sans-serif";
+Chart.defaults.color = '#6c757d';
+Chart.defaults.responsive = true;
+Chart.defaults.maintainAspectRatio = false;
+
+// Функция для обновления графиков при смене периода
+let currentCharts = {};
+
+function updateCharts(period) {
+    fetch(`/shop/api/analytics/?period=${period}`)
+        .then(response => response.json())
+        .then(data => {
+            // Уничтожаем старые графики перед созданием новых
+            Object.values(currentCharts).forEach(chart => chart.destroy());
+            
+            currentCharts.salesChart = createSalesChart(data.sales_data);
+            currentCharts.topPizzasChart = createTopPizzasChart(data.top_pizzas);
+            currentCharts.paymentMethodsChart = createPaymentMethodsChart(data.payment_methods);
+            currentCharts.orderStatusChart = createOrderStatusChart(data.order_statuses);
+            currentCharts.saucePopularityChart = createSaucePopularityChart(data.sauce_popularity);
+        });
+}
+
+// График динамики продаж
+function createSalesChart(data = null) {
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    return new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data?.labels || {{ sales_dates|safe }},
+            datasets: [{
+                label: 'Выручка',
+                data: data?.data || {{ sales_revenue|safe }},
+                borderColor: '#3498db',
+                backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: value => value + ' Br'
+                    }
+                }
+            }
+        }
+    });
+}
+
+// График популярных пицц
+function createTopPizzasChart(data = null) {
+    const ctx = document.getElementById('topPizzasChart').getContext('2d');
+    return new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: data?.labels || {{ top_pizzas_labels|safe }},
+            datasets: [{
+                data: data?.data || {{ top_pizzas_data|safe }},
+                backgroundColor: [
+                    '#3498db',
+                    '#2ecc71',
+                    '#f1c40f',
+                    '#e74c3c',
+                    '#9b59b6'
+                ]
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                }
+            }
+        }
+    });
+}
+
+// График способов оплаты
+function createPaymentMethodsChart(data = null) {
+    const ctx = document.getElementById('paymentMethodsChart').getContext('2d');
+    return new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: data?.labels || {{ payment_methods_labels|safe }},
+            datasets: [{
+                data: data?.data || {{ payment_methods_data|safe }},
+                backgroundColor: [
+                    '#3498db',
+                    '#2ecc71',
+                    '#f1c40f'
+                ]
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        boxWidth: 12,
+                        padding: 15
+                    }
+                }
+            }
+        }
+    });
+}
+
+// График статусов заказов
+function createOrderStatusChart(data = null) {
+    const ctx = document.getElementById('orderStatusChart').getContext('2d');
+    return new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: data?.labels || {{ order_status_labels|safe }},
+            datasets: [{
+                data: data?.data || {{ order_status_data|safe }},
+                backgroundColor: '#3498db'
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+// График популярности соусов
+function createSaucePopularityChart(data = null) {
+    const ctx = document.getElementById('saucePopularityChart').getContext('2d');
+    return new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: data?.labels || {{ sauce_labels|safe }},
+            datasets: [{
+                label: 'Продажи',
+                data: data?.data || {{ sauce_sales_data|safe }},
+                borderColor: '#3498db',
+                backgroundColor: 'rgba(52, 152, 219, 0.2)'
+            }]
+        },
+        options: {
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Инициализация графиков
+document.addEventListener('DOMContentLoaded', function() {
+    currentCharts.salesChart = createSalesChart();
+    currentCharts.topPizzasChart = createTopPizzasChart();
+    currentCharts.paymentMethodsChart = createPaymentMethodsChart();
+    currentCharts.orderStatusChart = createOrderStatusChart();
+    currentCharts.saucePopularityChart = createSaucePopularityChart();
+});
+</script>
+{% endblock %} 

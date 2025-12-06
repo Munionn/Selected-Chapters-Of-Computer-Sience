@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Наша команда - Пиццерия{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-5 text-center">Наша команда</h1>
+
+    <!-- Руководство -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Руководство</h2>
+        <div class="staff-container">
+            {% for member in management %}
+            <div class="staff-member">
+                <div class="staff-photo-wrapper">
+                    {% if member.photo %}
+                    <img src="{{ member.photo.url }}" class="staff-photo" alt="{{ member.name }}">
+                    {% else %}
+                    <img src="{% static 'img/staff-placeholder.png' %}" class="staff-photo" alt="Default Avatar">
+                    {% endif %}
+                </div>
+                <div class="staff-info">
+                    <h3 class="staff-name">{{ member.name }}</h3>
+                    <p class="staff-position">{{ member.position }}</p>
+                    <p class="staff-description">{{ member.description }}</p>
+                    {% if member.email or member.phone %}
+                    <div class="staff-contact">
+                        {% if member.email %}
+                        <p class="staff-contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:{{ member.email }}">{{ member.email }}</a>
+                        </p>
+                        {% endif %}
+                        {% if member.phone %}
+                        <p class="staff-contact-item">
+                            <i class="fas fa-phone"></i>
+                            <a href="tel:{{ member.phone }}">{{ member.phone }}</a>
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Остальные сотрудники -->
+    <section>
+        <h2 class="text-center mb-4">Наши специалисты</h2>
+        <div class="staff-container">
+            {% for member in staff %}
+            <div class="staff-member">
+                <div class="staff-photo-wrapper">
+                    {% if member.photo %}
+                    <img src="{{ member.photo.url }}" class="staff-photo" alt="{{ member.name }}">
+                    {% else %}
+                    <img src="{% static 'img/staff-placeholder.png' %}" class="staff-photo" alt="Default Avatar">
+                    {% endif %}
+                </div>
+                <div class="staff-info">
+                    <h3 class="staff-name">{{ member.name }}</h3>
+                    <p class="staff-position">{{ member.position }}</p>
+                    <p class="staff-description">{{ member.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .staff-card {
+        transition: transform 0.2s;
+    }
+    .staff-card:hover {
+        transform: translateY(-5px);
+    }
+    .card-img-wrapper {
+        overflow: hidden;
+        height: 250px;
+    }
+    .card-img-wrapper img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s;
+    }
+    .staff-card:hover .card-img-wrapper img {
+        transform: scale(1.1);
+    }
+    .contact-info {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+</style>
+{% endblock %} 

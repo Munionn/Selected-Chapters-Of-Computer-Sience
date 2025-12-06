@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Выбор типа регистрации{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="mb-4">Регистрация</h2>
+            <p class="lead mb-4">Выберите тип пользователя для регистрации:</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <h3>Клиент</h3>
+                            <p>Зарегистрируйтесь как клиент, чтобы заказывать услуги ремонта и отслеживать статус ваших заказов.</p>
+                            <a href="{% url 'pizzeria:register_client' %}" class="btn btn-primary">Регистрация как клиент</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <h3>Мастер</h3>
+                            <p>Зарегистрируйтесь как мастер, чтобы предлагать услуги ремонта и получать заказы от клиентов.</p>
+                            <a href="{% url 'pizzeria:register_master' %}" class="btn btn-primary">Регистрация как мастер</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-3">
+                <p>Уже зарегистрированы? <a href="{% url 'pizzeria:login' %}">Войти</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4 text-muted">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <p>Дата и время (ваша тайм-зона): {{ current_date|date:"d/m/Y H:i:s" }}</p>
+            <p>Дата и время (UTC): {{ current_date_utc|date:"d/m/Y H:i:s" }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %} 

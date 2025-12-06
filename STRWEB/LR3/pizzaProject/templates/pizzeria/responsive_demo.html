@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Адаптивная картинка без CSS - Пиццерия{% endblock %}
+
+{% block content %}
+<main class="container py-5">
+    <h1 class="mb-4">Адаптивная картинка без CSS</h1>
+    
+    <!-- Простая адаптивная картинка с HTML5 атрибутами -->
+    <section class="mb-5">
+        <h2>Адаптивная картинка logo.png</h2>
+        <picture>
+            <source media="(min-width: 1200px)" srcset="{% static 'img/logo.png' %} 2x, {% static 'img/logo.png' %} 1x" width="80" height="80">
+            <source media="(min-width: 768px)" srcset="{% static 'img/logo.png' %} 1.5x, {% static 'img/logo.png' %} 1x" width="60" height="60">
+            <source media="(max-width: 767px)" srcset="{% static 'img/logo.png' %} 1x" width="40" height="40">
+            <img src="{% static 'img/logo.png' %}" 
+                 alt="PizzaMaster Logo" 
+                 width="80" 
+                 height="80"
+                 loading="lazy"
+                 sizes="(min-width: 1200px) 80px, (min-width: 768px) 60px, 40px">
+        </picture>
+    </section>
+
+    <!-- Информация о HTML5 атрибутах -->
+    <section class="mb-5">
+        <h2>HTML5 атрибуты для адаптивности</h2>
+        <div class="alert alert-info">
+            <h4>Используемые атрибуты:</h4>
+            <ul>
+                <li><strong>width и height</strong> - задают размеры изображения</li>
+                <li><strong>srcset</strong> - набор изображений с разными разрешениями</li>
+                <li><strong>sizes</strong> - размеры изображения для разных экранов</li>
+                <li><strong>media</strong> - медиа-запросы для разных устройств</li>
+                <li><strong>loading="lazy"</strong> - ленивая загрузка</li>
+                <li><strong>alt</strong> - альтернативный текст для доступности</li>
+            </ul>
+        </div>
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load shop_filters %}
+
+{% block title %}Промокоды и купоны - Пиццерия{% endblock %}
+
+{% block meta_description %}Актуальные промокоды и купоны на скидку в нашей пиццерии. Экономьте на заказах с нашими специальными предложениями.{% endblock %}
+{% block meta_keywords %}промокоды, купоны, скидки, акции, пиццерия{% endblock %}
+
+{% block content %}
+<main class="container py-5">
+    <header class="mb-5">
+        <h1>Промокоды и купоны</h1>
+        <p class="lead">Используйте наши промокоды для получения скидок на заказы</p>
+    </header>
+
+    <!-- Активные промокоды -->
+    <section class="active-promos mb-5">
+        <h2 class="mb-4">
+            <i class="fas fa-tag text-success me-2"></i>
+            Действующие промокоды
+        </h2>
+        <ul class="promocode-list">
+            {% for promo in promo_codes %}
+            {% if promo.is_valid %}
+            <li class="promocode-item active">
+                <div class="promo-code">
+                    <span class="code">{{ promo.code }}</span>
+                    <button class="btn btn-sm btn-outline-primary copy-btn" 
+                            data-code="{{ promo.code }}"
+                            aria-label="Копировать промокод">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+                <h3 class="h5 mt-3">
+                    {% if promo.discount_type == 'fixed' %}
+                        Скидка {{ promo.discount_amount }} Br
+                    {% else %}
+                        Скидка {{ promo.discount_amount }}%
+                    {% endif %}
+                </h3>
+                <p class="card-text">{{ promo.description }}</p>
+                {% if promo.min_order_amount > 0 %}
+                <p class="text-muted small">
+                    Минимальная сумма заказа: {{ promo.min_order_amount }} Br
+                </p>
+                {% endif %}
+                <div class="promo-footer">
+                    <small class="text-muted">
+                        Действует до: 
+                        <time datetime="{{ promo.end_date|date:'Y-m-d' }}">
+                            {{ promo.end_date|date:"d.m.Y" }}
+                        </time>
+                    </small>
+                    {% if promo.usage_limit %}
+                    <small class="text-muted">
+                        Осталось: {{ promo.usage_limit|sub:promo.times_used }}
+                    </small>
+                    {% endif %}
+                </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- Архивные промокоды -->
+    <section class="archived-promos">
+        <h2 class="mb-4">
+            <i class="fas fa-archive text-muted me-2"></i>
+            Архив промокодов
+        </h2>
+        <ul class="promocode-list">
+            {% for promo in promo_codes %}
+            {% if not promo.is_valid %}
+            <li class="promocode-item archived">
+                <div class="promo-code">
+                    <span class="code text-muted">{{ promo.code }}</span>
+                    <span class="badge bg-secondary">Закончился</span>
+                </div>
+                <h3 class="h5 mt-3 text-muted">
+                    {% if promo.discount_type == 'fixed' %}
+                        Скидка {{ promo.discount_amount }} Br
+                    {% else %}
+                        Скидка {{ promo.discount_amount }}%
+                    {% endif %}
+                </h3>
+                <p class="card-text text-muted">{{ promo.description }}</p>
+                <div class="promo-footer text-muted">
+                    <small>
+                        Действовал до: 
+                        <time datetime="{{ promo.end_date|date:'Y-m-d' }}">
+                            {{ promo.end_date|date:"d.m.Y" }}
+                        </time>
+                    </small>
+                </div>
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </section>
+
+    <!-- Уведомление о копировании -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="copyToast" class="toast" role="alert" aria-live="polite" aria-atomic="true">
+            <div class="toast-body">
+                <i class="fas fa-check-circle text-success me-2"></i>
+                Промокод скопирован!
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .promo-card {
+        border: none;
+        border-radius: 15px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .promo-card.active {
+        border-top: 4px solid #28a745;
+    }
+    
+    .promo-card.archived {
+        opacity: 0.7;
+    }
+    
+    .promo-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .promo-code {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .promo-code .code {
+        font-family: monospace;
+        font-size: 1.2rem;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+    
+    .copy-btn {
+        padding: 0.25rem 0.5rem;
+        transition: all 0.2s;
+    }
+    
+    .copy-btn:hover {
+        transform: scale(1.1);
+    }
+    
+    .progress {
+        background-color: #e9ecef;
+        overflow: hidden;
+        border-radius: 10px;
+    }
+    
+    .progress-bar {
+        transition: width 0.6s ease;
+    }
+    
+    .toast {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .toast-body {
+        padding: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .promo-code {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .promo-code .code {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Копирование промокода
+    const copyButtons = document.querySelectorAll('.copy-btn');
+    const toast = new Toast(document.getElementById('copyToast'));
+    
+    copyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const code = this.dataset.code;
+            navigator.clipboard.writeText(code).then(() => {
+                toast.show();
+                
+                // Анимация кнопки
+                this.innerHTML = '<i class="fas fa-check"></i>';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-copy"></i>';
+                }, 2000);
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

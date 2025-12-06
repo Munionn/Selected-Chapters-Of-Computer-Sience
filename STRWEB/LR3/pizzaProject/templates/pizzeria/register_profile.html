@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Регистрация {{ user_type|title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="mb-4">Регистрация {% if user_type == 'client' %}клиента{% else %}мастера{% endif %}</h2>
+            
+            <form method="post" enctype="multipart/form-data" novalidate id="registration-form">
+                {% csrf_token %}
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Основная информация</h4>
+                    </div>
+                    <div class="card-body">
+                        {% for field in user_form %}
+                            <div class="form-group mb-3">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                                {{ field.errors }}
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Информация профиля</h4>
+                    </div>
+                    <div class="card-body">
+                        {% for field in profile_form %}
+                            <div class="form-group mb-3">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                                {{ field.errors }}
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% if field.name == "phone_number" or field.name == "address" %}
+                                    <small class="form-text text-muted">Необязательное поле</small>
+                                {% endif %}
+                                {% if field.name == "birth_date" %}
+                                    <div class="invalid-feedback" id="birth-date-error"></div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                    <a href="{% url 'pizzeria:register' %}" class="btn btn-secondary ml-2">Назад</a>
+                </div>
+            </form>
+            
+            <div class="text-center mt-3">
+                <p>Уже зарегистрированы? <a href="{% url 'pizzeria:login' %}">Войти</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4 text-muted">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <p>Дата и время (ваша тайм-зона): {{ current_date|date:"d/m/Y H:i:s" }}</p>
+            <p>Дата и время (UTC): {{ current_date_utc|date:"d/m/Y H:i:s" }}</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Style the Django forms with custom CSS classes
+        const formControls = document.querySelectorAll('input, select, textarea');
+        formControls.forEach(function(element) {
+            if (element.type !== 'checkbox' && element.type !== 'radio') {
+                element.classList.add('form-control');
+            } else {
+                element.classList.add('form-check-input');
+            }
+        });
+        
+        // Add special handling for the specializations checkboxes if needed
+        const specializationContainer = document.querySelector('input[name="specializations"]')?.closest('.form-group');
+        if (specializationContainer) {
+            const checkboxes = specializationContainer.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(function(checkbox) {
+                const label = checkbox.nextElementSibling;
+                if (label) {
+                    const div = document.createElement('div');
+                    div.classList.add('form-check');
+                    checkbox.classList.add('form-check-input');
+                    label.classList.add('form-check-label');
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+                    specializationContainer.appendChild(div);
+                }
+            });
+        }
+        
+        // Валидация даты рождения
+        const birthDateField = document.querySelector('input[name="birth_date"]');
+        const form = document.getElementById('registration-form');
+        
+        if (birthDateField && form) {
+            birthDateField.addEventListener('change', validateBirthDate);
+            form.addEventListener('submit', function(event) {
+                if (!validateBirthDate()) {
+                    event.preventDefault();
+                }
+            });
+            
+            function validateBirthDate() {
+                const birthDate = new Date(birthDateField.value);
+                const today = new Date();
+                
+                // Вычисляем дату, которая была 18 лет назад
+                const minDate = new Date();
+                minDate.setFullYear(today.getFullYear() - 18);
+                
+                const errorElement = document.getElementById('birth-date-error');
+                
+                if (birthDate > minDate) {
+                    birthDateField.classList.add('is-invalid');
+                    errorElement.textContent = 'Вам должно быть не менее 18 лет';
+                    return false;
+                } else {
+                    birthDateField.classList.remove('is-invalid');
+                    errorElement.textContent = '';
+                    return true;
+                }
+            }
+        }
+    });
+</script>
+{% endblock %} 

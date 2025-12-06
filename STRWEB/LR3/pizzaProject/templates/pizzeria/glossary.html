@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Словарь терминов - Пиццерия{% endblock %}
+
+{% block meta_description %}Словарь терминов и понятий, используемых в пиццерии. Узнайте больше о видах пиццы, ингредиентах и кулинарных терминах.{% endblock %}
+{% block meta_keywords %}словарь терминов, пицца, термины пиццерии, кулинарные термины{% endblock %}
+
+{% block content %}
+<main class="container py-5">
+    <header class="mb-5">
+        <h1>Словарь терминов</h1>
+        <p class="lead">Узнайте больше о терминах и понятиях, используемых в нашей пиццерии</p>
+    </header>
+
+    <!-- Алфавитная навигация -->
+    <nav class="alphabet-nav mb-4" aria-label="Алфавитная навигация">
+        <div class="d-flex flex-wrap justify-content-center">
+            {% for letter in alphabet %}
+                <a href="#letter-{{ letter }}" 
+                   class="btn m-1">
+                    {{ letter }}
+                </a>
+            {% endfor %}
+        </div>
+    </nav>
+
+    <!-- Поиск -->
+    <div class="search-section mb-5">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="fas fa-search"></i>
+            </span>
+            <input type="text" id="glossarySearch" class="form-control" 
+                   placeholder="Поиск терминов..." aria-label="Поиск терминов">
+        </div>
+    </div>
+
+    <!-- Список терминов -->
+    <div class="terms-list">
+        {% regroup terms by first_letter as letter_groups %}
+        {% for group in letter_groups %}
+            <section id="letter-{{ group.grouper }}" class="mb-5">
+                <h2 class="letter-heading display-4 mb-4">{{ group.grouper }}</h2>
+                <div class="accordion" id="accordion-{{ group.grouper }}">
+                    {% for term in group.list %}
+                        <article class="accordion-item term-item" data-term="{{ term.term|lower }}">
+                            <h3 class="accordion-header" id="heading-{{ term.id }}">
+                                <button class="accordion-button collapsed" type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#collapse-{{ term.id }}" 
+                                        aria-expanded="false" 
+                                        aria-controls="collapse-{{ term.id }}">
+                                    {{ term.term }}
+                                    <small class="text-muted ms-2">
+                                        Добавлено: {{ term.created_at|date:"d.m.Y" }}
+                                    </small>
+                                </button>
+                            </h3>
+                            <div id="collapse-{{ term.id }}" 
+                                 class="accordion-collapse collapse" 
+                                 aria-labelledby="heading-{{ term.id }}" 
+                                 data-bs-parent="#accordion-{{ group.grouper }}">
+                                <div class="accordion-body">
+                                    {{ term.definition|linebreaks }}
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+        {% empty %}
+            <div class="alert alert-info" role="alert">
+                <i class="fas fa-info-circle me-2"></i>
+                В словаре пока нет терминов.
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Кнопка "Наверх" -->
+    <button id="backToTop" class="btn btn-primary rounded-circle" aria-label="Вернуться к началу страницы">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+</main>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .alphabet-nav {
+        position: sticky;
+        top: 80px; /* Below navbar */
+        z-index: 999; /* Lower than navbar */
+        background: white;
+        padding: 1rem 0;
+        border-bottom: 1px solid #eee;
+        margin-top: 2rem;
+    }
+    
+    .alphabet-nav .btn {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        margin: 0.25rem;
+        border-radius: 8px;
+    }
+    
+    .letter-heading {
+        color: #007bff;
+        font-weight: 300;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 0.5rem;
+    }
+    
+    .accordion-button {
+        background: white;
+    }
+    
+    .accordion-button:not(.collapsed) {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        color: white;
+    }
+    
+    .accordion-button:not(.collapsed)::after {
+        filter: brightness(0) invert(1);
+    }
+    
+    .accordion-button small {
+        font-size: 0.875rem;
+    }
+    
+    .term-item {
+        margin-bottom: 1rem;
+        border: none;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .term-item:hover {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .accordion-body {
+        background: #f8f9fa;
+        padding: 1.5rem;
+    }
+    
+    #backToTop {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .hidden {
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Поиск терминов
+    const searchInput = document.getElementById('glossarySearch');
+    const termItems = document.querySelectorAll('.term-item');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        termItems.forEach(item => {
+            const term = item.dataset.term;
+            if (term.includes(searchTerm)) {
+                item.classList.remove('hidden');
+            } else {
+                item.classList.add('hidden');
+            }
+        });
+    });
+    
+    // Кнопка "Наверх"
+    const backToTopButton = document.getElementById('backToTop');
+    
+    window.addEventListener('scroll', function() {
+        if (window.pageYOffset > 300) {
+            backToTopButton.style.display = 'flex';
+        } else {
+            backToTopButton.style.display = 'none';
+        }
+    });
+    
+    backToTopButton.addEventListener('click', function() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+    
+    // Плавная прокрутка для алфавитной навигации
+    document.querySelectorAll('.alphabet-nav a').forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (!this.classList.contains('disabled')) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                window.scrollTo({
+                    top: targetElement.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

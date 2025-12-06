@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+Allow: /menu/
+Allow: /about/
+Allow: /contacts/
+Allow: /news/
+Allow: /promotions/
+Allow: /reviews/
+Allow: /vacancies/
+
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /payment/
+Disallow: /profile/
+Disallow: /register/
+Disallow: /login/
+Disallow: /logout/
+
+Sitemap: https://example.com/sitemap.xml

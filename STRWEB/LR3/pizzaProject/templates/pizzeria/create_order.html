@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+
+{% block title %}Создание заказа{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'pizzeria:menu' %}">Меню</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'pizzeria:service_masters' service.id %}">{{ service.name }}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Оформление заказа</li>
+                </ol>
+            </nav>
+            
+            <h1 class="mb-4">Оформление заказа</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Информация о заказе</h4>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Услуга:</dt>
+                        <dd class="col-sm-9">{{ service.name }}</dd>
+                        
+                        <dt class="col-sm-3">Описание:</dt>
+                        <dd class="col-sm-9">{{ service.description }}</dd>
+                        
+                        <dt class="col-sm-3">Мастер:</dt>
+                        <dd class="col-sm-9">{{ master.user.first_name }} {{ master.user.last_name }}</dd>
+                        
+                        <dt class="col-sm-3">Цена:</dt>
+                        <dd class="col-sm-9">{{ service.price }} руб.</dd>
+                    </dl>
+                    
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="scheduled_date" class="form-label">Дата визита</label>
+                                <input type="date" class="form-control" id="scheduled_date" name="scheduled_date" required>
+                                <div class="form-text">Выберите удобную дату для визита</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="scheduled_time" class="form-label">Время визита</label>
+                                <input type="time" class="form-control" id="scheduled_time" name="scheduled_time" required>
+                                <div class="form-text">Выберите удобное время для визита</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Дополнительная информация о заказе</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" placeholder="Укажите подробности заказа, пожелания и т.д."></textarea>
+                            <div class="form-text">Опишите, что именно нужно отремонтировать, особенности изделия или любую другую важную информацию.</div>
+                        </div>
+                        
+                        {% if parts %}
+                        <div class="mb-3">
+                            <label for="part" class="form-label">Выберите запчасть (необязательно)</label>
+                            <select class="form-select" id="part" name="part">
+                                <option value="">Без запчасти (только работа)</option>
+                                {% for part in parts %}
+                                <option value="{{ part.id }}">{{ part.name }} (+ {{ part.price }} руб.)</option>
+                                {% endfor %}
+                            </select>
+                            <div class="form-text">При выборе запчасти, ее стоимость будет добавлена к стоимости работы.</div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Промокод -->
+                        <div class="mb-3">
+                            <label for="promocode" class="form-label">Промокод (необязательно)</label>
+                            <input type="text" class="form-control" id="promocode" name="promocode" placeholder="Введите промокод">
+                            <div class="form-text">Введите промокод, если у вас есть. Скидка применяется только к стоимости работы (без запчастей).</div>
+                            
+                            {% if promocode_info.error %}
+                            <div class="alert alert-danger mt-2">
+                                {{ promocode_info.error }}
+                            </div>
+                            {% endif %}
+                            
+                            {% if promocode_info.applied %}
+                            <div class="alert alert-success mt-2">
+                                Промокод применен! Скидка: {{ promocode_info.discount }} руб.
+                            </div>
+                            {% endif %}
+                            
+                            {% if active_promocodes %}
+                            <div class="mt-2">
+                                <p class="fw-bold">Доступные промокоды для этой услуги:</p>
+                                <ul class="list-group">
+                                    {% for promo in active_promocodes %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span class="text-primary">{{ promo.code }}</span>
+                                        <span>
+                                            {% if promo.discount_type == 'percentage' %}
+                                                Скидка {{ promo.discount_amount }}%
+                                            {% else %}
+                                                Скидка {{ promo.discount_amount }} руб.
+                                            {% endif %}
+                                        </span>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <p class="fw-bold">Итоговая цена: <span id="total-price">{{ service.price }}</span> руб.</p>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success">Оформить заказ</button>
+                        <a href="{% url 'pizzeria:service_masters' service.id %}" class="btn btn-secondary">Назад к выбору мастера</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Информация о мастере</h4>
+                </div>
+                <div class="card-body text-center">
+                    {% if master.photo %}
+                        <img src="{{ master.photo.url }}" alt="{{ master.user.first_name }} {{ master.user.last_name }}" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
+                    {% else %}
+                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 150px; height: 150px; margin: 0 auto;">
+                            <h2>{{ master.user.first_name|first }}{{ master.user.last_name|first }}</h2>
+                        </div>
+                    {% endif %}
+                    <h5>{{ master.user.first_name }} {{ master.user.last_name }}</h5>
+                    <p>{{ master.bio|default:"Информация о мастере отсутствует"|truncatewords:30 }}</p>
+                    {% if master.phone_number %}
+                    <p><strong>Телефон:</strong> {{ master.phone_number }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set minimum date for date picker to today
+        const dateInput = document.getElementById('scheduled_date');
+        if (dateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.min = today;
+        }
+        
+        const partSelect = document.getElementById('part');
+        const promocodeInput = document.getElementById('promocode');
+        const totalPriceElement = document.getElementById('total-price');
+        
+        if(totalPriceElement) {
+            const basePrice = {{ service.price }};
+            let partPrice = 0;
+            
+            // Function to update the total price
+            function updateTotalPrice() {
+                let totalPrice = basePrice + partPrice;
+                // Promocode logic would go here in a real implementation
+                totalPriceElement.textContent = totalPrice.toFixed(2);
+            }
+            
+            // Handle part selection
+            if(partSelect) {
+                partSelect.addEventListener('change', function() {
+                    partPrice = 0;
+                    const selectedOption = partSelect.options[partSelect.selectedIndex];
+                    
+                    if(selectedOption.value) {
+                        // Extract price from the option text (format: "Part name (+ XX руб.)")
+                        const priceMatch = selectedOption.text.match(/\+\s+(\d+(\.\d+)?)/);
+                        if(priceMatch && priceMatch[1]) {
+                            partPrice = parseFloat(priceMatch[1]);
+                        }
+                    }
+                    
+                    updateTotalPrice();
+                });
+            }
+        }
+    });
+</script>
+{% endblock %} 

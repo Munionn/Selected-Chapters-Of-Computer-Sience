@@ -1,0 +1,1047 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home-page.css' %}">
+{% endblock %}
+
+{% block title %}Главная - Пиццерия{% endblock %}
+
+{% block meta_description %}Лучшая пиццерия в городе. Свежие ингредиенты, быстрая доставка, традиционные рецепты и отличный сервис.{% endblock %}
+{% block meta_keywords %}пицца, доставка пиццы, итальянская кухня, пиццерия, свежие ингредиенты{% endblock %}
+
+{% block content %}
+<!-- Pizza Animation Section -->
+<section class="pizza-animation-section" aria-label="Анимация пиццы" id="pizza-animation-section">
+    <div class="pizza-animation-container">
+        <!-- Pizza base -->
+        <div class="pizza-base">
+            <div class="pizza-crust"></div>
+        </div>
+        
+        <!-- Pizza ingredients flying in -->
+        <div class="ingredient ingredient-tomato" data-delay="0.5s">
+            <div class="tomato-slice"></div>
+        </div>
+        <div class="ingredient ingredient-cheese" data-delay="1s">
+            <div class="cheese-shred"></div>
+        </div>
+        <div class="ingredient ingredient-pepperoni" data-delay="1.5s">
+            <div class="pepperoni-slice"></div>
+        </div>
+        <div class="ingredient ingredient-mushroom" data-delay="2s">
+            <div class="mushroom-piece"></div>
+        </div>
+        <div class="ingredient ingredient-basil" data-delay="2.5s">
+            <div class="basil-leaf"></div>
+        </div>
+        
+        <!-- Steam effect -->
+        <div class="steam-container">
+            <div class="steam steam-1"></div>
+            <div class="steam steam-2"></div>
+            <div class="steam steam-3"></div>
+        </div>
+        
+        <!-- Company name -->
+        <div class="company-name-animation">
+            <h1 class="company-title">Пиццерия</h1>
+            <p class="company-subtitle">Лучшая пицца в городе</p>
+        </div>
+    </div>
+</section>
+
+<!-- Banner Carousel Section -->
+<section class="banner-section mb-5" aria-label="Рекламный баннер" id="banner-section">
+    <div id="bannerCarousel" class="simple-carousel" 
+         data-loop="true" 
+         data-navs="true" 
+         data-pags="true" 
+         data-auto="true" 
+         data-stop-mouse-hover="true" 
+         data-delay="5">
+        <div class="carousel-container">
+            <div class="carousel-slide active">
+                <a href="{% url 'pizzeria:menu' %}" style="display: block; text-decoration: none;">
+                    <img src="{% static 'img/banner1.jpg' %}" alt="Специальное предложение" style="width: 100%; height: 400px; object-fit: cover;">
+                    <div class="carousel-text">
+                        <h2>Специальное предложение</h2>
+                        <p>Закажи две пиццы и получи третью в подарок!</p>
+                        <span class="btn btn-primary">Заказать сейчас</span>
+                    </div>
+                </a>
+            </div>
+            <div class="carousel-slide">
+                <a href="{% url 'pizzeria:menu' %}" style="display: block; text-decoration: none;">
+                    <img src="{% static 'img/banner2.jpg' %}" alt="Новинки меню" style="width: 100%; height: 400px; object-fit: cover;">
+                    <div class="carousel-text">
+                        <h2>Новинки меню</h2>
+                        <p>Попробуйте наши новые вкусы!</p>
+                        <span class="btn btn-primary">Смотреть меню</span>
+                    </div>
+                </a>
+            </div>
+            <div class="carousel-slide">
+                <a href="{% url 'pizzeria:about' %}" style="display: block; text-decoration: none;">
+                    <img src="{% static 'img/banner3.jpg' %}" alt="Доставка" style="width: 100%; height: 400px; object-fit: cover;">
+                    <div class="carousel-text">
+                        <h2>Быстрая доставка</h2>
+                        <p>Доставляем за 60 минут или пицца бесплатно!</p>
+                        <span class="btn btn-primary">Подробнее</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <button class="carousel-btn prev-btn">‹</button>
+        <button class="carousel-btn next-btn">›</button>
+        <div class="carousel-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+    </div>
+</section>
+
+<!-- Latest Article Section -->
+{% if latest_article %}
+<section class="latest-article mb-5" aria-label="Последняя статья">
+    <h2 class="mb-4">Последние новости</h2>
+    <article class="card">
+        <div class="row g-0">
+            <div class="col-md-4">
+                {% if latest_article.image %}
+                    <img src="{{ latest_article.image.url }}" class="img-fluid rounded-start" alt="{{ latest_article.title }}" style="height: 100%; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'img/article-placeholder.png' %}" class="img-fluid rounded-start" alt="{{ latest_article.title }}" style="height: 100%; object-fit: cover;">
+                {% endif %}
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h3 class="card-title">{{ latest_article.title }}</h3>
+                    <p class="card-text">{{ latest_article.short_description }}</p>
+                    <p class="card-text"><small class="text-muted">Опубликовано: <time datetime="{{ latest_article.created_at|date:'Y-m-d' }}">{{ latest_article.created_at|date:"d.m.Y" }}</time></small></p>
+                    <a href="{% url 'pizzeria:article_detail' latest_article.id %}" class="btn btn-primary">Читать далее</a>
+                </div>
+    </div>
+</div>
+    </article>
+</section>
+{% endif %}
+
+<!-- Featured Pizzas Section -->
+{% if best_sellers %}
+<section class="featured-pizzas mb-5" aria-label="Популярные пиццы">
+    <h2 class="mb-4">Популярные пиццы</h2>
+    <div class="pizza-grid">
+        {% for pizza in best_sellers %}
+        <article class="pizza-card">
+            {% if pizza.image %}
+                <img src="{{ pizza.image.url }}" 
+                     class="card-img-top" 
+                     alt="{{ pizza.name }}"
+                     style="height: 200px; object-fit: cover;">
+            {% else %}
+                <img src="{% static 'img/pizza-placeholder.png' %}" 
+                     class="card-img-top" 
+                     alt="{{ pizza.name }}"
+                     style="height: 200px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <h3 class="card-title h5">{{ pizza.name }}</h3>
+                <p class="card-text">{{ pizza.description|truncatewords:20 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-primary fw-bold">от {{ pizza.base_price }} руб.</span>
+                    {% if pizza.is_spicy %}
+                        <span class="badge bg-danger">Острая</span>
+                    {% endif %}
+                    {% if pizza.is_vegetarian %}
+                        <span class="badge bg-success">Вегетарианская</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="card-footer bg-transparent border-top-0">
+                <a href="{% url 'pizzeria:pizza_detail' pizza.id %}" class="btn btn-outline-primary w-100">
+                    <i class="fas fa-eye"></i> ПОДРОБНЕЕ
+                </a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Partners Section -->
+{% if partners %}
+<section class="partners mb-5" aria-label="Наши партнеры">
+    <h2 class="mb-4">Наши партнеры</h2>
+    <div class="partners-grid">
+        {% for partner in partners %}
+        <div class="partner-block">
+            <div class="partner-content">
+                <h3 class="partner-name">{{ partner.name }}</h3>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Promotions Section -->
+{% if active_promotions %}
+<section class="promotions mb-5" aria-label="Акции">
+        <h2 class="mb-4">Акции и специальные предложения</h2>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for promotion in active_promotions %}
+        <article class="col">
+                <div class="card h-100">
+                    {% if promotion.image %}
+                    <img src="{{ promotion.image.url }}" class="card-img-top" alt="{{ promotion.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <img src="{% static 'img/promotion-placeholder.png' %}" class="card-img-top" alt="{{ promotion.name }}" style="height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="h5">{{ promotion.name }}</h3>
+                        <p class="card-text">{{ promotion.description }}</p>
+                    {% if promotion.discount_percentage %}
+                        <div class="badge bg-danger mb-2">Скидка {{ promotion.discount_percentage }}%</div>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer text-muted">
+                    <time datetime="{{ promotion.end_date|date:'Y-m-d' }}">
+                        Действует до {{ promotion.end_date|date:"d.m.Y" }}
+                    </time>
+                    </div>
+                </div>
+        </article>
+            {% endfor %}
+        </div>
+</section>
+{% endif %}
+
+<!-- Features Section -->
+<section class="features mb-5" aria-label="Наши преимущества">
+        <h2 class="mb-4">Почему выбирают нас</h2>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+        <article class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="h5">🍕 Настоящая итальянская пицца</h3>
+                        <p class="card-text">Наши повара прошли обучение в Италии и готовят пиццу по традиционным рецептам.</p>
+                    </div>
+                </div>
+        </article>
+        <article class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="h5">🌟 Свежие ингредиенты</h3>
+                        <p class="card-text">Мы используем только свежие и качественные ингредиенты от проверенных поставщиков.</p>
+                    </div>
+                </div>
+        </article>
+        <article class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="h5">🚚 Быстрая доставка</h3>
+                        <p class="card-text">Доставляем пиццу горячей в течение 60 минут или заказ бесплатно!</p>
+                    </div>
+                </div>
+        </article>
+        <article class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="h5">💳 Удобная оплата</h3>
+                        <p class="card-text">Принимаем наличные и банковские карты. Возможна оплата онлайн.</p>
+                    </div>
+                </div>
+        </article>
+            </div>
+</section>
+
+<!-- Info Section -->
+<section class="info-section" aria-label="Информация">
+<div class="row">
+        <div class="col-md-6 mb-4">
+            <article class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h3 class="h5 mb-0">Часы работы</h3>
+            </div>
+            <div class="card-body">
+                    <dl>
+                        <dt>Понедельник - Четверг:</dt>
+                        <dd>11:00-23:00</dd>
+                        <dt>Пятница - Суббота:</dt>
+                        <dd>11:00-02:00</dd>
+                        <dt>Воскресенье:</dt>
+                        <dd>12:00-23:00</dd>
+                    </dl>
+            </div>
+            </article>
+        </div>
+        <div class="col-md-6 mb-4">
+            <article class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h3 class="h5 mb-0">Контакты</h3>
+            </div>
+            <div class="card-body">
+                    <address>
+                        <p class="mb-1"><i class="fas fa-phone"></i> <strong>Телефон:</strong> <a href="tel:+375XXXXXXXXX">+375 (XX) XXX-XX-XX</a></p>
+                        <p class="mb-1"><i class="fas fa-envelope"></i> <strong>Email:</strong> <a href="mailto:info@pizzeria.com">info@pizzeria.com</a></p>
+                        <p class="mb-0"><i class="fas fa-map-marker-alt"></i> <strong>Адрес:</strong> г. Минск, ул. Примерная, 123</p>
+                    </address>
+            </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- Range Input Generator Section -->
+<section class="range-generator-section py-5" style="background-color: #f8f9fa; margin-top: 4rem;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center mb-4">Range Input Generator</h2>
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Generator Control</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="generateRangeCheckbox">
+                            <label class="form-check-label" for="generateRangeCheckbox">
+                                <strong>Generate Range Input Element</strong>
+                                <small class="text-muted d-block">Check this box to generate a new range input element with customizable attributes</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Container for generated range inputs -->
+                <div id="rangeInputsContainer" class="mb-4">
+                    <!-- Generated elements will appear here -->
+                </div>
+                
+                <div class="alert alert-info">
+                    <h6>Instructions:</h6>
+                    <ul class="mb-0">
+                        <li>Check the checkbox above to generate a new range input element</li>
+                        <li>Configure attributes (name, min, max, step, value, list, disabled) for each element</li>
+                        <li>You can generate multiple range inputs</li>
+                        <li>Click "Delete" button to remove a specific element</li>
+                        <li>All generated elements are saved in localStorage and will persist after page refresh</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Library Readers Management Section -->
+<section class="library-readers-section py-5" style="background-color: #f0f4f8; margin-top: 4rem;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center mb-4">
+                    <i class="fas fa-book-reader"></i> Управление читателями библиотеки
+                </h2>
+                <p class="text-center text-muted mb-5">
+                    Система управления информацией о читателях библиотеки с двумя реализациями наследования
+                </p>
+                
+                <!-- Tabs for switching between implementations -->
+                <ul class="nav nav-tabs mb-4" id="implementationTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="prototype-tab" data-bs-toggle="tab" data-bs-target="#prototype-pane" type="button" role="tab">
+                            <i class="fas fa-code"></i> Прототипное наследование
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="class-tab" data-bs-toggle="tab" data-bs-target="#class-pane" type="button" role="tab">
+                            <i class="fas fa-code-branch"></i> ES6 Class/Extends
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="implementationTabContent">
+                    <!-- Prototype Implementation Tab -->
+                    <div class="tab-pane fade show active" id="prototype-pane" role="tabpanel">
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-user-plus"></i> Добавить читателя (Прототипное наследование)
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="readerFormPrototype">
+                                    <div class="row">
+                                        <div class="col-md-3 mb-3">
+                                            <label for="lastNamePrototype" class="form-label">Фамилия <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="lastNamePrototype" name="lastName" required>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label for="firstNamePrototype" class="form-label">Имя <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="firstNamePrototype" name="firstName" required>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label for="middleNamePrototype" class="form-label">Отчество</label>
+                                            <input type="text" class="form-control" id="middleNamePrototype" name="middleName">
+                                        </div>
+                                        <div class="col-md-2 mb-3">
+                                            <label for="membershipYearPrototype" class="form-label">Год начала <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" id="membershipYearPrototype" name="membershipYear" 
+                                                   min="1900" max="2024" required>
+                                        </div>
+                                        <div class="col-md-1 mb-3">
+                                            <label for="ticketNumberPrototype" class="form-label">Билет <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="ticketNumberPrototype" name="ticketNumber" required>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-plus"></i> Добавить читателя
+                                    </button>
+                                    
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-8 mb-4">
+                                <div class="card">
+                                    <div class="card-header bg-info text-white">
+                                        <h5 class="mb-0"><i class="fas fa-list"></i> Список всех читателей</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="readersListPrototype"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h5 class="mb-0"><i class="fas fa-trophy"></i> Результат</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="resultPrototype"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ES6 Class Implementation Tab -->
+                    <div class="tab-pane fade" id="class-pane" role="tabpanel">
+                        <div class="card mb-4">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-user-plus"></i> Добавить читателя (ES6 Class/Extends)
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <form id="readerFormClass">
+                                    <div class="row">
+                                        <div class="col-md-3 mb-3">
+                                            <label for="lastNameClass" class="form-label">Фамилия <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="lastNameClass" name="lastName" required>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label for="firstNameClass" class="form-label">Имя <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="firstNameClass" name="firstName" required>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label for="middleNameClass" class="form-label">Отчество</label>
+                                            <input type="text" class="form-control" id="middleNameClass" name="middleName">
+                                        </div>
+                                        <div class="col-md-2 mb-3">
+                                            <label for="membershipYearClass" class="form-label">Год начала <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" id="membershipYearClass" name="membershipYear" 
+                                                   min="1900" max="2024" required>
+                                        </div>
+                                        <div class="col-md-1 mb-3">
+                                            <label for="ticketNumberClass" class="form-label">Билет <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="ticketNumberClass" name="ticketNumber" required>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-plus"></i> Добавить читателя
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-8 mb-4">
+                                <div class="card">
+                                    <div class="card-header bg-info text-white">
+                                        <h5 class="mb-0"><i class="fas fa-list"></i> Список всех читателей</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="readersListClass"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-header bg-warning text-dark">
+                                        <h5 class="mb-0"><i class="fas fa-trophy"></i> Результат</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="resultClass"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mt-4">
+                    <h6><i class="fas fa-info-circle"></i> Описание задачи:</h6>
+                    <p class="mb-2">Дан массив объектов, содержащий сведения о читателях библиотеки:</p>
+                    <ul class="mb-0">
+                        <li>Фамилия, имя, отчество человека</li>
+                        <li>Год, с которого он является читателем библиотеки</li>
+                        <li>Номер его читательского билета</li>
+                    </ul>
+                    <p class="mt-2 mb-0"><strong>Задача:</strong> Вывести на экран информацию о самом "старом" читателе библиотеки (с самым ранним годом начала чтения).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Additional APIs Demonstration Section -->
+<section class="apis-demo-section py-5" style="background-color: #e8f4f8; margin-top: 4rem;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center mb-4">
+                    <i class="fas fa-plug"></i> Демонстрация дополнительных Web API
+                </h2>
+                <p class="text-center text-muted mb-5">
+                    Примеры использования современных браузерных API
+                </p>
+                
+                <div class="row">
+                    <!-- Geolocation API -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-map-marker-alt"></i> Geolocation API
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Получение текущего местоположения пользователя</p>
+                                <button type="button" class="btn btn-primary w-100" id="getLocationBtn">
+                                    <i class="fas fa-location-arrow"></i> Получить местоположение
+                                </button>
+                                <div id="locationResult" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Speech Synthesis API -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-volume-up"></i> Speech Synthesis API
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Синтез речи из текста</p>
+                                <div class="mb-3">
+                                    <label for="speechText" class="form-label">Текст для озвучивания:</label>
+                                    <textarea class="form-control" id="speechText" rows="3" 
+                                              placeholder="Введите текст...">Добро пожаловать в нашу пиццерию!</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="speechRate" class="form-label">Скорость: <span id="rateValue">1.0</span></label>
+                                    <input type="range" class="form-range" id="speechRate" min="0.5" max="2" step="0.1" value="1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="speechPitch" class="form-label">Высота: <span id="pitchValue">1.0</span></label>
+                                    <input type="range" class="form-range" id="speechPitch" min="0" max="2" step="0.1" value="1">
+                                </div>
+                                <button type="button" class="btn btn-success w-100 mb-2" id="speakBtn">
+                                    <i class="fas fa-play"></i> Озвучить
+                                </button>
+                                <button type="button" class="btn btn-warning w-100" id="stopSpeakBtn">
+                                    <i class="fas fa-stop"></i> Остановить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Battery API -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-warning text-dark">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-battery-full"></i> Battery API
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Информация о батарее устройства</p>
+                                <button type="button" class="btn btn-warning w-100" id="getBatteryBtn">
+                                    <i class="fas fa-battery-half"></i> Проверить батарею
+                                </button>
+                                <div id="batteryResult" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Additional APIs Row -->
+                <div class="row mt-4">
+                    <!-- Navigator API -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-info-circle"></i> Navigator API
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Информация о браузере и устройстве</p>
+                                <button type="button" class="btn btn-info w-100" id="getNavigatorBtn">
+                                    <i class="fas fa-desktop"></i> Получить информацию
+                                </button>
+                                <div id="navigatorResult" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Clipboard API -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header bg-secondary text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-clipboard"></i> Clipboard API
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-text">Работа с буфером обмена</p>
+                                <div class="mb-3">
+                                    <label for="clipboardText" class="form-label">Текст для копирования:</label>
+                                    <input type="text" class="form-control" id="clipboardText" 
+                                           value="Пиццерия - лучшая пицца в городе!">
+                                </div>
+                                <button type="button" class="btn btn-secondary w-100 mb-2" id="copyToClipboardBtn">
+                                    <i class="fas fa-copy"></i> Копировать в буфер
+                                </button>
+                                <button type="button" class="btn btn-secondary w-100" id="pasteFromClipboardBtn">
+                                    <i class="fas fa-paste"></i> Вставить из буфера
+                                </button>
+                                <div id="clipboardResult" class="mt-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Chart.js Mathematical Functions Section -->
+<section class="chart-section py-5" style="background-color: #f5f7fa; margin-top: 4rem;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="text-center mb-4">
+                    <i class="fas fa-chart-line"></i> Графики функций: arccos(x) разложение в ряд
+                </h2>
+                <p class="text-center text-muted mb-5">
+                    Сравнение разложения функции в ряд с точным значением через math.js
+                </p>
+                
+                <!-- Control Panel -->
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-sliders-h"></i> Параметры графика
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label for="xMin" class="form-label">X минимум:</label>
+                                <input type="number" class="form-control" id="xMin" value="-1" step="0.1" min="-1" max="1">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="xMax" class="form-label">X максимум:</label>
+                                <input type="number" class="form-control" id="xMax" value="1" step="0.1" min="-1" max="1">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="nTerms" class="form-label">Количество членов ряда (n):</label>
+                                <input type="number" class="form-control" id="nTerms" value="10" min="1" max="50" step="1">
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label for="pointsCount" class="form-label">Количество точек:</label>
+                                <input type="number" class="form-control" id="pointsCount" value="100" min="10" max="500" step="10">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-primary me-2" id="buildChartBtn">
+                                    <i class="fas fa-chart-line"></i> Построить график
+                                </button>
+                                <button type="button" class="btn btn-success me-2" id="saveChartBtn">
+                                    <i class="fas fa-download"></i> Сохранить график
+                                </button>
+                                <button type="button" class="btn btn-info me-2" id="animateChartBtn">
+                                    <i class="fas fa-play"></i> Анимировать построение
+                                </button>
+                                <button type="button" class="btn btn-warning" id="resetChartBtn">
+                                    <i class="fas fa-redo"></i> Сбросить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chart Container -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-area"></i> График функции arccos(x)
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="mathChart" style="max-height: 500px;"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Data Table -->
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-table"></i> Таблица данных
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" id="dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>№</th>
+                                        <th>x</th>
+                                        <th>F(x) - ряд</th>
+                                        <th>n</th>
+                                        <th>Math F(x)</th>
+                                        <th>Разница</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dataTableBody">
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">Нажмите "Построить график" для генерации данных</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info mt-4">
+                    <h6><i class="fas fa-info-circle"></i> Описание:</h6>
+                    <p class="mb-2"><strong>Функция:</strong> arccos(x) = π/2 - arcsin(x)</p>
+                    <p class="mb-2"><strong>Разложение в ряд:</strong> arccos(x) = π/2 - Σ<sub>n=0</sub><sup>∞</sup> [(2n)! / (4<sup>n</sup> · (n!)² · (2n+1))] · x<sup>2n+1</sup></p>
+                    <p class="mb-0"><strong>Область определения:</strong> |x| ≤ 1</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Parallax Pizza Section -->
+<section id="pizza-parallax-top" class="parallax-pizza-section">
+    <img src="{% static 'img/pizza1.png' %}" id="pizza_bg" class="parallax-layer" alt="Фон пиццы" style="background: transparent !important; border: none !important;" />
+    <h2 id="pizza_text" class="parallax-text">Пиццерия</h2>
+    <img src="{% static 'img/pizza2.png' %}" id="pizza_left" class="parallax-layer" alt="Пицца слева" style="background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important;" />
+    <img src="{% static 'img/pizza3.png' %}" id="pizza_right" class="parallax-layer" alt="Пицца справа" style="background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important;" />
+    <img src="{% static 'img/pizza1.png' %}" id="pizza_center" class="parallax-layer" alt="Пицца центр" style="background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important;" />
+</section>
+
+<!-- Age Verification Section -->
+<section class="age-verification-section py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); margin-top: 4rem;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h3 class="mb-0">
+                            <i class="fas fa-birthday-cake"></i> Проверка возраста
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <p class="text-center text-muted mb-4">
+                            Пожалуйста, введите вашу дату рождения для продолжения
+                        </p>
+                        <form id="ageVerificationForm">
+                            <div class="mb-3">
+                                <label for="birthDate" class="form-label">
+                                    <i class="fas fa-calendar-alt"></i> Дата рождения <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" 
+                                       class="form-control form-control-lg" 
+                                       id="birthDate" 
+                                       name="birthDate" 
+                                       required
+                                       max="">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-check"></i> Проверить возраст
+                            </button>
+                        </form>
+                        <div id="ageVerificationResult" class="mt-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %} 
+
+{% block extra_js %}
+<script src="{% static 'js/slider.js' %}"></script>
+<script src="{% static 'js/library-readers.js' %}"></script>
+<script src="{% static 'js/range-generator.js' %}"></script>
+<script src="{% static 'js/web-apis-demo.js' %}"></script>
+<!-- Chart.js and Math.js libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjs@12.2.0/lib/browser/math.min.js"></script>
+<script src="{% static 'js/chart-math.js' %}"></script>
+<script src="{% static 'js/scroll-animations.js' %}"></script>
+<script>
+// Slider is automatically initialized by slider.js
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Pizza animation initialization
+    function initPizzaAnimation() {
+        const pizzaSection = document.getElementById('pizza-animation-section');
+        if (!pizzaSection) return;
+        
+        // Trigger animation when section comes into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Reset and restart animations
+                    const ingredients = entry.target.querySelectorAll('.ingredient');
+                    ingredients.forEach((ingredient, index) => {
+                        ingredient.style.animation = 'none';
+                        setTimeout(() => {
+                            ingredient.style.animation = `ingredient-fly-in 0.8s ease-out forwards`;
+                        }, index * 100);
+                    });
+                    
+                    // Trigger steam animation
+                    const steamElements = entry.target.querySelectorAll('.steam');
+                    steamElements.forEach((steam, index) => {
+                        steam.style.animation = 'none';
+                        setTimeout(() => {
+                            steam.style.animation = `steam-rise 2s ease-in-out infinite`;
+                        }, index * 200);
+                    });
+                    
+                    // Trigger company name animation
+                    const companyName = entry.target.querySelector('.company-name-animation');
+                    if (companyName) {
+                        companyName.style.animation = 'none';
+                        setTimeout(() => {
+                            companyName.style.animation = 'company-name-appear 1s ease-out forwards';
+                        }, 3000);
+                    }
+                    
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        
+        observer.observe(pizzaSection);
+    }
+    
+    // Initialize pizza animation
+    initPizzaAnimation();
+    
+    // Add hover effects to pizza
+    const pizzaBase = document.querySelector('.pizza-base');
+    if (pizzaBase) {
+        pizzaBase.addEventListener('mouseenter', function() {
+            this.style.animationPlayState = 'paused';
+            this.style.transform = 'scale(1.1) rotate(5deg)';
+        });
+        
+        pizzaBase.addEventListener('mouseleave', function() {
+            this.style.animationPlayState = 'running';
+            this.style.transform = '';
+        });
+    }
+    
+    // Range Input Generator is initialized in range-generator.js
+    // Library Readers Management System Initialization
+    // (Classes are defined in library-readers.js, but we need to initialize managers here)
+    
+    // Initialize managers
+    const managerPrototype = new LibraryReadersManagerPrototype();
+    const managerClass = new LibraryReadersManagerClass();
+    
+    // Initialize displays
+    function updateDisplaysPrototype() {
+        managerPrototype.displayAll('readersListPrototype');
+        managerPrototype.displayResult('resultPrototype');
+    }
+    
+    function updateDisplaysClass() {
+        managerClass.displayAll('readersListClass');
+        managerClass.displayResult('resultClass');
+    }
+    
+    // Prototype implementation form handler
+    const formPrototype = document.getElementById('readerFormPrototype');
+    if (formPrototype) {
+        formPrototype.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = {
+                lastName: formData.get('lastName'),
+                firstName: formData.get('firstName'),
+                middleName: formData.get('middleName'),
+                membershipYear: formData.get('membershipYear'),
+                ticketNumber: formData.get('ticketNumber')
+            };
+            
+            managerPrototype.addReader(data);
+            updateDisplaysPrototype();
+            this.reset();
+        });
+    }
+    
+    // ES6 Class implementation form handler
+    const formClass = document.getElementById('readerFormClass');
+    if (formClass) {
+        formClass.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = {
+                lastName: formData.get('lastName'),
+                firstName: formData.get('firstName'),
+                middleName: formData.get('middleName'),
+                membershipYear: formData.get('membershipYear'),
+                ticketNumber: formData.get('ticketNumber')
+            };
+            
+            managerClass.addReader(data);
+            updateDisplaysClass();
+            this.reset();
+        });
+    }
+    
+    // Initialize displays on page load
+    updateDisplaysPrototype();
+    updateDisplaysClass();
+    
+    // Update displays when switching tabs
+    const prototypeTab = document.getElementById('prototype-tab');
+    const classTab = document.getElementById('class-tab');
+    
+    if (prototypeTab) {
+        prototypeTab.addEventListener('shown.bs.tab', function() {
+            updateDisplaysPrototype();
+        });
+    }
+    
+    if (classTab) {
+        classTab.addEventListener('shown.bs.tab', function() {
+            updateDisplaysClass();
+        });
+    }
+    
+    // Web APIs are initialized in web-apis-demo.js
+    // Chart.js mathematical functions are initialized in chart-math.js
+    
+    // Age Verification System
+    function initAgeVerification() {
+        const form = document.getElementById('ageVerificationForm');
+        const birthDateInput = document.getElementById('birthDate');
+        const resultDiv = document.getElementById('ageVerificationResult');
+        
+        if (!form || !birthDateInput || !resultDiv) return;
+        
+        // Set max date to today
+        const today = new Date();
+        const maxDate = today.toISOString().split('T')[0];
+        birthDateInput.setAttribute('max', maxDate);
+        
+        // Remove min attribute to allow any past date
+        birthDateInput.addEventListener('focus', function() {
+            this.removeAttribute('min');
+        });
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const birthDateValue = birthDateInput.value;
+            if (!birthDateValue) {
+                resultDiv.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Пожалуйста, введите дату рождения</div>';
+                return;
+            }
+            
+            const birthDate = new Date(birthDateValue);
+            const today = new Date();
+            
+            // Calculate age
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            const dayDiff = today.getDate() - birthDate.getDate();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                age--;
+            }
+            
+            // Check if date is in the future
+            if (birthDate > today) {
+                resultDiv.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Дата рождения не может быть в будущем!</div>';
+                return;
+            }
+            
+            // Get day of week
+            const daysOfWeek = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
+            const dayOfWeek = daysOfWeek[birthDate.getDay()];
+            
+            // Format date for display
+            const formattedDate = birthDate.toLocaleDateString('ru-RU', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            if (age >= 18) {
+                // Adult user
+                resultDiv.innerHTML = `
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-check-circle"></i> Добро пожаловать!</h5>
+                        <p class="mb-2"><strong>Ваш возраст:</strong> ${age} ${age === 1 ? 'год' : age < 5 ? 'года' : 'лет'}</p>
+                        <p class="mb-0"><strong>День недели вашей даты рождения (${formattedDate}):</strong> ${dayOfWeek}</p>
+                    </div>
+                `;
+            } else {
+                // Minor user
+                resultDiv.innerHTML = `
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Требуется разрешение родителей</h5>
+                        <p class="mb-2"><strong>Ваш возраст:</strong> ${age} ${age === 1 ? 'год' : age < 5 ? 'года' : 'лет'}</p>
+                        <p class="mb-0">Для использования данного сайта необходимо разрешение родителей или законных представителей.</p>
+                    </div>
+                `;
+                
+                // Show alert
+                alert('ВНИМАНИЕ!\n\nВы несовершеннолетний пользователь.\nДля использования данного сайта необходимо разрешение родителей или законных представителей.');
+            }
+        });
+    }
+    
+    // Initialize age verification
+    initAgeVerification();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,425 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Меню - Пиццерия{% endblock %}
+
+{% block meta_description %}Меню пиццерии. Широкий выбор пицц, включая вегетарианские и острые варианты. Доставка по городу.{% endblock %}
+{% block meta_keywords %}пицца, меню пиццерии, заказать пиццу, доставка пиццы, вегетарианская пицца{% endblock %}
+
+{% block content %}
+<main class="container py-5">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+            <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="{% url 'pizzeria:home' %}" itemprop="item">
+                    <span itemprop="name">Главная</span>
+                </a>
+                <meta itemprop="position" content="1" />
+            </li>
+            <li class="breadcrumb-item active" aria-current="page" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span itemprop="name">Меню</span>
+                <meta itemprop="position" content="2" />
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Modern Filters Section -->
+    <section class="filters-section mb-5" aria-label="Фильтры меню">
+        <div class="form-card">
+            <div class="card-header">
+                <h4><i class="fas fa-filter"></i> Поиск и фильтры</h4>
+            </div>
+            
+            <form method="get" role="search" class="modern-search-form">
+                <!-- Main Search Row -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="category" class="form-label">
+                            <i class="fas fa-tags"></i> Категория
+                        </label>
+                        <select name="category" id="category" class="form-control" aria-label="Выбор категории пиццы">
+                            <option value="">Все категории</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}" {% if selected_category == category.id %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="sort" class="form-label">
+                            <i class="fas fa-sort"></i> Сортировка
+                        </label>
+                        <select name="sort" id="sort" class="form-control" aria-label="Сортировка пицц">
+                            <option value="name" {% if sort_by == 'name' %}selected{% endif %}>По названию</option>
+                            <option value="price_asc" {% if sort_by == 'price_asc' %}selected{% endif %}>По цене (возр.)</option>
+                            <option value="price_desc" {% if sort_by == 'price_desc' %}selected{% endif %}>По цене (убыв.)</option>
+                            <option value="rating" {% if sort_by == 'rating' %}selected{% endif %}>По рейтингу</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="per_page" class="form-label">
+                            <i class="fas fa-list"></i> Элементов на странице
+                        </label>
+                        <select name="per_page" id="per_page" class="form-control" aria-label="Количество элементов на странице">
+                            <option value="3" {% if per_page == 3 %}selected{% endif %}>3</option>
+                            <option value="6" {% if per_page == 6 %}selected{% endif %}>6</option>
+                            <option value="9" {% if per_page == 9 %}selected{% endif %}>9</option>
+                            <option value="12" {% if per_page == 12 %}selected{% endif %}>12</option>
+                            <option value="15" {% if per_page == 15 %}selected{% endif %}>15</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="search" class="form-label">
+                            <i class="fas fa-search"></i> Поиск
+                        </label>
+                        <div class="input-group">
+                            <input type="search" class="form-control" id="search" name="search" 
+                                   value="{{ search_query|default:'' }}" 
+                                   placeholder="Название или ингредиенты"
+                                   aria-label="Поиск по названию или ингредиентам">
+                            <div class="input-group-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-search"></i> НАЙТИ
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Additional Filters Section -->
+                <div class="form-section">
+                    <h5><i class="fas fa-sliders-h"></i> Дополнительные фильтры</h5>
+                    <div class="modern-checkboxes">
+                        <div class="checkbox-group">
+                            <input class="form-check-input" type="checkbox" id="vegetarian" name="vegetarian" 
+                                   {% if is_vegetarian %}checked{% endif %}
+                                   aria-label="Показать только вегетарианские пиццы">
+                            <label class="form-check-label" for="vegetarian">
+                                <i class="fas fa-leaf"></i> Вегетарианские
+                            </label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input class="form-check-input" type="checkbox" id="spicy" name="spicy" 
+                                   {% if is_spicy %}checked{% endif %}
+                                   aria-label="Показать только острые пиццы">
+                            <label class="form-check-label" for="spicy">
+                                <i class="fas fa-pepper-hot"></i> Острые
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Пиццы -->
+    <section class="menu-section" aria-label="Список пицц">
+        <h2 class="visually-hidden">Меню пицц</h2>
+        <div class="pizza-grid">
+            {% for pizza in pizzas %}
+            <article class="pizza-card" itemscope itemtype="https://schema.org/Product">
+                {% if pizza.image %}
+                <img src="{{ pizza.image.url }}" class="card-img-top" alt="{{ pizza.name }}" 
+                     style="height: 200px; object-fit: cover;" itemprop="image">
+                {% else %}
+                <img src="{% static 'img/pizza-placeholder.png' %}" class="card-img-top" alt="{{ pizza.name }}" 
+                     style="height: 200px; object-fit: cover;" itemprop="image">
+                {% endif %}
+                <div class="card-body">
+                    <h3 class="card-title h5" itemprop="name">{{ pizza.name }}</h3>
+                    <p class="card-text" itemprop="description">{{ pizza.description|truncatewords:20 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                            <span class="price">от <span itemprop="price">{{ pizza.base_price }}</span> Br</span>
+                            <meta itemprop="priceCurrency" content="BYN">
+                            <link itemprop="availability" href="https://schema.org/InStock">
+                        </div>
+                        {% if pizza.average_rating %}
+                        <div class="rating" itemprop="aggregateRating" itemscope itemtype="https://schema.org/AggregateRating">
+                            <i class="fas fa-star text-warning" aria-hidden="true"></i>
+                            <span itemprop="ratingValue">{{ pizza.average_rating|floatformat:1 }}</span>
+                            <meta itemprop="bestRating" content="5">
+                            <meta itemprop="worstRating" content="1">
+                            <meta itemprop="reviewCount" content="{{ pizza.reviews.count }}">
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="mt-3">
+                        <a href="{% url 'pizzeria:pizza_detail' pizza_id=pizza.id %}" 
+                           class="btn btn-outline-primary"
+                           aria-label="Подробнее о пицце {{ pizza.name }}">
+                            <i class="fas fa-eye"></i> ПОДРОБНЕЕ
+                        </a>
+                    </div>
+                </div>
+            </article>
+            {% empty %}
+            <div class="col-12">
+                <div class="empty-state text-center py-5" role="status">
+                    <i class="fas fa-pizza-slice fa-3x mb-3" aria-hidden="true"></i>
+                    <h3 class="h4">Пиццы не найдены</h3>
+                    <p>Попробуйте изменить параметры поиска</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Pagination Info -->
+    <div class="pagination-info text-center my-3">
+        <p class="text-muted mb-0">
+            Показано <strong>{{ pizzas.start_index }}</strong> - <strong>{{ pizzas.end_index }}</strong> из <strong>{{ total_items }}</strong> пицц
+        </p>
+    </div>
+
+    <!-- Пагинация -->
+    {% if pizzas.has_other_pages %}
+    <nav aria-label="Навигация по страницам" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if pizzas.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ pizzas.previous_page_number }}&category={{ selected_category|default:'' }}&sort={{ sort_by }}&search={{ search_query|default:'' }}&vegetarian={{ is_vegetarian|yesno:'on,' }}&spicy={{ is_spicy|yesno:'on,' }}&per_page={{ per_page }}" 
+                   aria-label="Предыдущая страница">
+                    <i class="fas fa-chevron-left" aria-hidden="true"></i>
+                    <span class="visually-hidden">Предыдущая</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for num in pizzas.paginator.page_range %}
+            <li class="page-item {% if pizzas.number == num %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}&category={{ selected_category|default:'' }}&sort={{ sort_by }}&search={{ search_query|default:'' }}&vegetarian={{ is_vegetarian|yesno:'on,' }}&spicy={{ is_spicy|yesno:'on,' }}&per_page={{ per_page }}" 
+                   aria-label="Страница {{ num }}" 
+                   {% if pizzas.number == num %}aria-current="page"{% endif %}>
+                    {{ num }}
+                </a>
+            </li>
+            {% endfor %}
+
+            {% if pizzas.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ pizzas.next_page_number }}&category={{ selected_category|default:'' }}&sort={{ sort_by }}&search={{ search_query|default:'' }}&vegetarian={{ is_vegetarian|yesno:'on,' }}&spicy={{ is_spicy|yesno:'on,' }}&per_page={{ per_page }}" 
+                   aria-label="Следующая страница">
+                    <i class="fas fa-chevron-right" aria-hidden="true"></i>
+                    <span class="visually-hidden">Следующая</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</main>
+
+{% block extra_css %}
+<style>
+    .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .badge {
+        transition: opacity 0.2s;
+    }
+    .badge:hover {
+        opacity: 0.8;
+    }
+    .empty-state {
+        color: #6c757d;
+    }
+    .empty-state i {
+        opacity: 0.5;
+    }
+    
+    /* 3D Volume Effect Styles */
+    .pizza-card {
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.1s ease-out;
+        will-change: transform;
+    }
+    
+    .pizza-card .card-img-top {
+        transition: transform 0.3s ease-out;
+        transform-style: preserve-3d;
+    }
+    
+    .pizza-card .card-body {
+        transform-style: preserve-3d;
+        transition: transform 0.3s ease-out;
+    }
+    
+    /* Enhanced shadow on hover */
+    .pizza-card:hover {
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 
+                    0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-submit form when filters change
+    const form = document.querySelector('form[role="search"]');
+    if (form) {
+        // Get all filters except per_page (it has its own handler)
+        const filters = form.querySelectorAll('select:not(#per_page), input[type="checkbox"]');
+        
+        filters.forEach(filter => {
+            filter.addEventListener('change', () => {
+                // Build URL with all current parameters
+                const url = new URL(window.location.href);
+                url.searchParams.set('page', '1'); // Reset to page 1
+                
+                // Preserve per_page if it exists
+                const perPage = document.getElementById('per_page');
+                if (perPage) {
+                    url.searchParams.set('per_page', perPage.value);
+                }
+                
+                window.location.href = url.toString();
+            });
+        });
+        
+        // Debounce search input
+        const searchInput = document.getElementById('search');
+        if (searchInput) {
+            let timeout = null;
+            
+            searchInput.addEventListener('input', function() {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    // Build URL with all current parameters
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('page', '1'); // Reset to page 1
+                    
+                    // Preserve per_page if it exists
+                    const perPage = document.getElementById('per_page');
+                    if (perPage) {
+                        url.searchParams.set('per_page', perPage.value);
+                    }
+                    
+                    window.location.href = url.toString();
+                }, 500);
+            });
+        }
+        
+        // When per_page changes, reset to page 1
+        const perPageSelect = document.getElementById('per_page');
+        if (perPageSelect) {
+            perPageSelect.addEventListener('change', function() {
+                // Update URL with per_page and reset to page 1
+                const url = new URL(window.location.href);
+                url.searchParams.set('per_page', this.value);
+                url.searchParams.set('page', '1');
+                window.location.href = url.toString();
+            });
+        }
+    }
+    
+    // 3D Volume Effect on Pizza Cards
+    function init3DCardEffect() {
+        const cards = document.querySelectorAll('.pizza-card');
+        
+        cards.forEach(card => {
+            let isHovering = false;
+            
+            // Mouse enter
+            card.addEventListener('mouseenter', function() {
+                isHovering = true;
+            });
+            
+            // Mouse leave - reset transform
+            card.addEventListener('mouseleave', function() {
+                isHovering = false;
+                this.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+                
+                // Reset image and body
+                const img = this.querySelector('.card-img-top');
+                const body = this.querySelector('.card-body');
+                if (img) {
+                    img.style.transform = 'translateZ(0) scale(1)';
+                }
+                if (body) {
+                    body.style.transform = 'translateZ(20px)';
+                }
+            });
+            
+            // Mouse move - apply 3D transform
+            card.addEventListener('mousemove', function(e) {
+                if (!isHovering) return;
+                
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                // Calculate center of card
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                // Calculate rotation angles (max 15 degrees)
+                const rotateX = ((y - centerY) / centerY) * -15;
+                const rotateY = ((x - centerX) / centerX) * 15;
+                
+                // Calculate scale (slight zoom on hover)
+                const scale = 1.05;
+                
+                // Apply 3D transform
+                this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
+                
+                // Parallax effect on image (moves opposite to rotation)
+                const img = this.querySelector('.card-img-top');
+                if (img) {
+                    const imgTranslateX = (x - centerX) / 20;
+                    const imgTranslateY = (y - centerY) / 20;
+                    const imgScale = 1.1;
+                    img.style.transform = `translateZ(50px) translateX(${imgTranslateX}px) translateY(${imgTranslateY}px) scale(${imgScale})`;
+                }
+                
+                // Parallax effect on card body (moves forward)
+                const body = this.querySelector('.card-body');
+                if (body) {
+                    body.style.transform = 'translateZ(30px)';
+                }
+            });
+        });
+    }
+    
+    // Initialize 3D effect
+    init3DCardEffect();
+    
+    // Re-initialize when new cards are loaded (for pagination)
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+                const newCards = document.querySelectorAll('.pizza-card:not([data-3d-initialized])');
+                if (newCards.length > 0) {
+                    init3DCardEffect();
+                    newCards.forEach(card => {
+                        card.setAttribute('data-3d-initialized', 'true');
+                    });
+                }
+            }
+        });
+    });
+    
+    const pizzaGrid = document.querySelector('.pizza-grid');
+    if (pizzaGrid) {
+        observer.observe(pizzaGrid, { childList: true, subtree: true });
+    }
+});
+</script>
+{% endblock %}
+{% endblock %}

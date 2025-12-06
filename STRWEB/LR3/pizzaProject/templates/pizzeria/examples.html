@@ -1,0 +1,398 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Примеры глобальных атрибутов - Пиццерия{% endblock %}
+
+{% block content %}
+<main class="container py-5" id="examples-main">
+    <header class="mb-5">
+        <h1 id="examples-title" class="text-center" title="Примеры использования глобальных атрибутов HTML">Примеры глобальных атрибутов HTML</h1>
+        <p class="lead text-center" title="Демонстрация различных глобальных атрибутов">Демонстрация различных глобальных атрибутов HTML5</p>
+    </header>
+
+    <!-- Примеры глобальных атрибутов -->
+    <section class="mb-5" id="global-attributes-section">
+        <h2 id="global-attributes-title" class="mb-4" title="Глобальные атрибуты">Глобальные атрибуты</h2>
+        
+        <!-- class и id -->
+        <div class="card mb-4" id="class-id-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="class-id-title">class и id</h3>
+            </div>
+            <div class="card-body">
+                <p class="text-primary" id="primary-text">Этот текст имеет класс "text-primary" и id "primary-text"</p>
+                <p class="text-success" id="success-text">Этот текст имеет класс "text-success" и id "success-text"</p>
+                <div class="alert alert-info" id="info-alert" role="alert">
+                    <strong>Информация:</strong> Используйте class для стилизации, id для уникальной идентификации.
+                </div>
+            </div>
+        </div>
+
+        <!-- title -->
+        <div class="card mb-4" id="title-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="title-title">title</h3>
+            </div>
+            <div class="card-body">
+                <p>Наведите курсор на элементы ниже, чтобы увидеть подсказки:</p>
+                <button class="btn btn-primary me-2" title="Это кнопка с подсказкой">Кнопка с подсказкой</button>
+                <a href="#" class="btn btn-secondary me-2" title="Это ссылка с подсказкой">Ссылка с подсказкой</a>
+                <span class="badge bg-warning" title="Это бейдж с подсказкой">Бейдж с подсказкой</span>
+            </div>
+        </div>
+
+        <!-- tabindex -->
+        <div class="card mb-4" id="tabindex-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="tabindex-title">tabindex</h3>
+            </div>
+            <div class="card-body">
+                <p>Используйте Tab для навигации между элементами:</p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <button class="btn btn-primary w-100 mb-2" tabindex="1" title="Первый элемент">Элемент 1 (tabindex="1")</button>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-secondary w-100 mb-2" tabindex="3" title="Третий элемент">Элемент 3 (tabindex="3")</button>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-success w-100 mb-2" tabindex="2" title="Второй элемент">Элемент 2 (tabindex="2")</button>
+                    </div>
+                </div>
+                <button class="btn btn-outline-danger" tabindex="-1" title="Элемент вне табуляции">Вне табуляции (tabindex="-1")</button>
+            </div>
+        </div>
+
+        <!-- accesskey -->
+        <div class="card mb-4" id="accesskey-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="accesskey-title">accesskey</h3>
+            </div>
+            <div class="card-body">
+                <p>Используйте Alt + указанная клавиша для быстрого доступа:</p>
+                <button class="btn btn-primary me-2" accesskey="h" title="Alt + H">Главная (Alt+H)</button>
+                <button class="btn btn-secondary me-2" accesskey="m" title="Alt + M">Меню (Alt+M)</button>
+                <button class="btn btn-success me-2" accesskey="c" title="Alt + C">Корзина (Alt+C)</button>
+                <button class="btn btn-warning" accesskey="s" title="Alt + S">Поиск (Alt+S)</button>
+            </div>
+        </div>
+
+        <!-- contenteditable -->
+        <div class="card mb-4" id="contenteditable-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="contenteditable-title">contenteditable</h3>
+            </div>
+            <div class="card-body">
+                <p>Редактируемые элементы:</p>
+                <div class="border p-3 mb-3" contenteditable="true" title="Кликните для редактирования">
+                    Этот текст можно редактировать. Кликните сюда и начните печатать!
+                </div>
+                <div class="border p-3" contenteditable="false" title="Этот элемент нельзя редактировать">
+                    Этот текст нельзя редактировать (contenteditable="false").
+                </div>
+            </div>
+        </div>
+
+        <!-- draggable -->
+        <div class="card mb-4" id="draggable-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="draggable-title">draggable</h3>
+            </div>
+            <div class="card-body">
+                <p>Перетаскиваемые элементы:</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="border p-3 mb-3 bg-light" draggable="true" title="Перетащите этот элемент">
+                            Перетаскиваемый элемент (draggable="true")
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border p-3 mb-3 bg-light" draggable="false" title="Этот элемент нельзя перетащить">
+                            Неперетаскиваемый элемент (draggable="false")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- hidden -->
+        <div class="card mb-4" id="hidden-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="hidden-title">hidden</h3>
+            </div>
+            <div class="card-body">
+                <p>Скрытые элементы:</p>
+                <button class="btn btn-primary me-2" onclick="toggleHidden()" title="Показать/скрыть элемент">Переключить видимость</button>
+                <div id="hidden-content" class="alert alert-info mt-3" hidden title="Этот элемент скрыт">
+                    Этот элемент скрыт с помощью атрибута hidden.
+                </div>
+            </div>
+        </div>
+
+        <!-- spellcheck -->
+        <div class="card mb-4" id="spellcheck-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="spellcheck-title">spellcheck</h3>
+            </div>
+            <div class="card-body">
+                <p>Проверка орфографии:</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="spellcheck-true" class="form-label">С проверкой орфографии:</label>
+                        <textarea class="form-control" id="spellcheck-true" spellcheck="true" title="Введите текст с проверкой орфографии" placeholder="Введите текст..."></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="spellcheck-false" class="form-label">Без проверки орфографии:</label>
+                        <textarea class="form-control" id="spellcheck-false" spellcheck="false" title="Введите текст без проверки орфографии" placeholder="Введите текст..."></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- translate -->
+        <div class="card mb-4" id="translate-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="translate-title">translate</h3>
+            </div>
+            <div class="card-body">
+                <p>Атрибут translate:</p>
+                <div class="border p-3 mb-3" translate="yes" title="Этот элемент можно переводить">
+                    Этот текст можно переводить (translate="yes").
+                </div>
+                <div class="border p-3" translate="no" title="Этот элемент нельзя переводить">
+                    Этот текст нельзя переводить (translate="no").
+                </div>
+            </div>
+        </div>
+
+        <!-- dir -->
+        <div class="card mb-4" id="dir-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="dir-title">dir</h3>
+            </div>
+            <div class="card-body">
+                <p>Направление текста:</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="border p-3" dir="ltr" title="Текст слева направо">
+                            <strong>LTR (слева направо):</strong> This text goes from left to right.
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="border p-3" dir="rtl" title="Текст справа налево">
+                            <strong>RTL (справа налево):</strong> هذا النص يذهب من اليمين إلى اليسار
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- lang -->
+        <div class="card mb-4" id="lang-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="lang-title">lang</h3>
+            </div>
+            <div class="card-body">
+                <p>Язык контента:</p>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="border p-3" lang="ru" title="Русский язык">
+                            <strong>Русский (lang="ru"):</strong> Привет, мир!
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border p-3" lang="en" title="Английский язык">
+                            <strong>English (lang="en"):</strong> Hello, world!
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border p-3" lang="es" title="Испанский язык">
+                            <strong>Español (lang="es"):</strong> ¡Hola, mundo!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- style -->
+        <div class="card mb-4" id="style-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="style-title">style</h3>
+            </div>
+            <div class="card-body">
+                <p>Встроенные стили:</p>
+                <div class="border p-3 mb-3" style="background-color: #f8f9fa; border-left: 4px solid #007bff;" title="Элемент с встроенными стилями">
+                    Этот элемент имеет встроенные стили через атрибут style.
+                </div>
+                <div class="border p-3" style="background: linear-gradient(45deg, #ff6b6b, #4ecdc4); color: white; text-align: center;" title="Элемент с градиентом">
+                    Градиентный фон с центрированным текстом
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Примеры семантических элементов -->
+    <section class="mb-5" id="semantic-elements-section">
+        <h2 id="semantic-elements-title" class="mb-4" title="Семантические элементы">Семантические элементы</h2>
+        
+        <div class="card mb-4" id="semantic-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="semantic-title">Семантическая разметка</h3>
+            </div>
+            <div class="card-body">
+                <article id="pizza-article" itemscope itemtype="https://schema.org/Recipe">
+                    <header id="article-header">
+                        <h1 id="article-title" itemprop="name" title="Название рецепта">Маргарита</h1>
+                        <time datetime="2024-01-15" itemprop="datePublished" title="Дата публикации">15 января 2024</time>
+                    </header>
+                    
+                    <section id="ingredients-section">
+                        <h2 id="ingredients-title" title="Ингредиенты">Ингредиенты</h2>
+                        <ul id="ingredients-list">
+                            <li itemprop="recipeIngredient" title="Тесто для пиццы">Тесто для пиццы</li>
+                            <li itemprop="recipeIngredient" title="Томатный соус">Томатный соус</li>
+                            <li itemprop="recipeIngredient" title="Моцарелла">Моцарелла</li>
+                            <li itemprop="recipeIngredient" title="Базилик">Базилик</li>
+                        </ul>
+                    </section>
+                    
+                    <section id="instructions-section">
+                        <h2 id="instructions-title" title="Инструкции">Инструкции</h2>
+                        <ol id="instructions-list">
+                            <li title="Шаг 1">Раскатайте тесто</li>
+                            <li title="Шаг 2">Добавьте соус</li>
+                            <li title="Шаг 3">Посыпьте сыром</li>
+                            <li title="Шаг 4">Запеките в духовке</li>
+                        </ol>
+                    </section>
+                    
+                    <footer id="article-footer">
+                        <p id="cooking-time" itemprop="cookTime" title="Время приготовления">Время приготовления: 15 минут</p>
+                    </footer>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Примеры форм -->
+    <section class="mb-5" id="forms-section">
+        <h2 id="forms-title" class="mb-4" title="Примеры форм">Примеры форм</h2>
+        
+        <div class="card mb-4" id="form-example">
+            <div class="card-header">
+                <h3 class="h5 mb-0" id="form-title">Форма заказа пиццы</h3>
+            </div>
+            <div class="card-body">
+                <form id="pizza-order-form" action="#" method="post" novalidate>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="customer-name" class="form-label" title="Ваше имя">Имя *</label>
+                                <input type="text" class="form-control" id="customer-name" name="name" required 
+                                       placeholder="Введите ваше имя" title="Введите ваше полное имя" 
+                                       autocomplete="name" spellcheck="true">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="customer-email" class="form-label" title="Ваш email">Email *</label>
+                                <input type="email" class="form-control" id="customer-email" name="email" required 
+                                       placeholder="example@email.com" title="Введите ваш email адрес" 
+                                       autocomplete="email" spellcheck="false">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="pizza-size" class="form-label" title="Размер пиццы">Размер пиццы</label>
+                        <select class="form-select" id="pizza-size" name="size" title="Выберите размер пиццы">
+                            <option value="" title="Выберите размер">Выберите размер</option>
+                            <option value="small" title="Маленькая (25 см)">Маленькая (25 см)</option>
+                            <option value="medium" title="Средняя (30 см)">Средняя (30 см)</option>
+                            <option value="large" title="Большая (35 см)">Большая (35 см)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" title="Дополнительные ингредиенты">Дополнительные ингредиенты</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="extra-cheese" name="extras" value="cheese" title="Дополнительный сыр">
+                            <label class="form-check-label" for="extra-cheese" title="Дополнительный сыр">Дополнительный сыр</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="extra-mushrooms" name="extras" value="mushrooms" title="Грибы">
+                            <label class="form-check-label" for="extra-mushrooms" title="Грибы">Грибы</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="extra-pepperoni" name="extras" value="pepperoni" title="Пепперони">
+                            <label class="form-check-label" for="extra-pepperoni" title="Пепперони">Пепперони</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="special-requests" class="form-label" title="Особые пожелания">Особые пожелания</label>
+                        <textarea class="form-control" id="special-requests" name="requests" rows="3" 
+                                  placeholder="Укажите особые пожелания..." title="Введите особые пожелания к заказу"
+                                  spellcheck="true"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label" title="Способ оплаты">Способ оплаты</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="payment-cash" name="payment" value="cash" title="Наличными">
+                            <label class="form-check-label" for="payment-cash" title="Наличными">Наличными</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" id="payment-card" name="payment" value="card" title="Картой">
+                            <label class="form-check-label" for="payment-card" title="Картой">Картой</label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input class="form-check-input" type="checkbox" id="terms-agreement" name="terms" required title="Согласие с условиями">
+                        <label class="form-check-label" for="terms-agreement" title="Согласие с условиями">
+                            Я согласен с <a href="#" title="Условия использования">условиями использования</a>
+                        </label>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="reset" class="btn btn-outline-secondary me-md-2" title="Очистить форму">Очистить</button>
+                        <button type="submit" class="btn btn-primary" title="Отправить заказ">Заказать</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+function toggleHidden() {
+    const element = document.getElementById('hidden-content');
+    if (element.hasAttribute('hidden')) {
+        element.removeAttribute('hidden');
+    } else {
+        element.setAttribute('hidden', '');
+    }
+}
+
+// Добавляем обработчики для демонстрации
+document.addEventListener('DOMContentLoaded', function() {
+    // Обработчик для перетаскивания
+    const draggableElement = document.querySelector('[draggable="true"]');
+    if (draggableElement) {
+        draggableElement.addEventListener('dragstart', function(e) {
+            e.dataTransfer.setData('text/plain', 'Перетаскиваемый элемент');
+        });
+    }
+    
+    // Обработчик для формы
+    const form = document.getElementById('pizza-order-form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Форма отправлена! (Это демонстрация)');
+        });
+    }
+});
+</script>
+{% endblock %}

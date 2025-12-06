@@ -1,0 +1,941 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}О нас - {{ company.name }}{% endblock %}
+
+{% block meta_description %}{{ company.description|truncatewords:25 }}{% endblock %}
+{% block meta_keywords %}пиццерия, о нас, история компании, команда, сертификаты{% endblock %}
+
+{% block content %}
+<main class="container py-5" itemscope itemtype="https://schema.org/Restaurant">
+    <!-- Hero Section -->
+    <header class="row mb-5">
+        <div class="col-md-6">
+            <h1 class="display-4 mb-4" itemprop="name">{{ company.name }}</h1>
+            <p class="lead" itemprop="description">{{ company.description }}</p>
+            {% if company.slogan %}
+                <blockquote class="blockquote">
+                    <p class="mb-0">{{ company.slogan }}</p>
+                </blockquote>
+            {% endif %}
+        </div>
+        <div class="col-md-6">
+            {% if company.logo %}
+                <picture class="company-logo img-fluid rounded shadow" itemprop="image">
+                    <source media="(min-width: 1200px)" srcset="{{ company.logo.url }} 2x, {{ company.logo.url }} 1x">
+                    <source media="(min-width: 768px)" srcset="{{ company.logo.url }} 1.5x, {{ company.logo.url }} 1x">
+                    <source media="(max-width: 767px)" srcset="{{ company.logo.url }} 1x">
+                    <img src="{{ company.logo.url }}" 
+                         alt="{{ company.name }}" 
+                         class="img-fluid rounded shadow"
+                         loading="eager"
+                         sizes="(min-width: 1200px) 50vw, (min-width: 768px) 50vw, 100vw">
+                </picture>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Video Section -->
+    {% if company.video_url %}
+    <section class="row mb-5" aria-labelledby="video-section-heading" id="video-section">
+        <div class="col-12 text-center">
+            <h2 id="video-section-heading" class="mb-4" title="Видео о нашей пиццерии">Наше видео</h2>
+            <div class="ratio ratio-16x9" id="video-container">
+                <iframe src="{{ company.video_url }}" 
+                        title="Видео о нашей пиццерии"
+                        allowfullscreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        loading="lazy"
+                        tabindex="0"
+                        id="company-video">
+                </iframe>
+        </div>
+            <p class="text-muted mt-3" title="Описание видео">
+                <small>Посмотрите, как мы готовим нашу пиццу и обслуживаем клиентов</small>
+            </p>
+    </div>
+    </section>
+    {% endif %}
+
+    <!-- Additional Video Section with HTML5 Video -->
+    <section class="row mb-5" aria-labelledby="html5-video-section-heading" id="html5-video-section">
+        <div class="col-12 text-center">
+            <h2 id="html5-video-section-heading" class="mb-4" title="Демонстрационное видео">Демонстрационное видео</h2>
+            <div class="ratio ratio-16x9" id="html5-video-container">
+                <video controls 
+                       preload="metadata" 
+                       poster="{% static 'img/video-poster.jpg' %}"
+                       title="Демонстрационное видео о приготовлении пиццы"
+                       tabindex="0"
+                       id="demo-video"
+                       aria-label="Видео о приготовлении пиццы">
+                    <source src="{% static 'videos/pizza-making.mp4' %}" type="video/mp4">
+                    <source src="{% static 'videos/pizza-making.webm' %}" type="video/webm">
+                    <source src="{% static 'videos/pizza-making.ogv' %}" type="video/ogg">
+                    <track kind="subtitles" src="{% static 'videos/subtitles-ru.vtt' %}" srclang="ru" label="Русский" default>
+                    <track kind="captions" src="{% static 'videos/captions-en.vtt' %}" srclang="en" label="English">
+                    <p class="text-muted">
+                        Ваш браузер не поддерживает HTML5 видео. 
+                        <a href="{% static 'videos/pizza-making.mp4' %}" title="Скачать видео" download>Скачайте видео</a> для просмотра.
+                    </p>
+                </video>
+            </div>
+            <div class="mt-3">
+                <button type="button" 
+                        class="btn btn-outline-primary me-2" 
+                        onclick="document.getElementById('demo-video').play()"
+                        title="Воспроизвести видео"
+                        tabindex="1">
+                    <i class="fas fa-play"></i> Воспроизвести
+                </button>
+                <button type="button" 
+                        class="btn btn-outline-secondary me-2" 
+                        onclick="document.getElementById('demo-video').pause()"
+                        title="Приостановить видео"
+                        tabindex="2">
+                    <i class="fas fa-pause"></i> Пауза
+                </button>
+                <button type="button" 
+                        class="btn btn-outline-info me-2" 
+                        onclick="document.getElementById('demo-video').muted = !document.getElementById('demo-video').muted"
+                        title="Включить/выключить звук"
+                        tabindex="3">
+                    <i class="fas fa-volume-mute"></i> Звук
+                </button>
+                <button type="button" 
+                        class="btn btn-outline-success" 
+                        onclick="document.getElementById('demo-video').requestFullscreen()"
+                        title="Полноэкранный режим"
+                        tabindex="4">
+                    <i class="fas fa-expand"></i> Полный экран
+                </button>
+        </div>
+            <p class="text-muted mt-3" title="Описание демонстрационного видео">
+                <small>Посмотрите процесс приготовления нашей фирменной пиццы</small>
+            </p>
+    </div>
+    </section>
+
+    <!-- Audio Section -->
+    <section class="row mb-5" aria-labelledby="audio-section-heading" id="audio-section">
+        <div class="col-12 text-center">
+            <h2 id="audio-section-heading" class="mb-4" title="Аудио о нашей пиццерии">Аудио о нашей пиццерии</h2>
+            <div class="card mx-auto" style="max-width: 500px;">
+                <div class="card-body">
+                    <h5 class="card-title" title="Название аудио">Интервью с шеф-поваром</h5>
+                    <p class="card-text text-muted" title="Описание аудио">Послушайте рассказ нашего шеф-повара о секретах приготовления пиццы</p>
+                    <audio controls 
+                           preload="metadata"
+                           title="Аудио интервью с шеф-поваром"
+                           tabindex="0"
+                           id="chef-audio"
+                           aria-label="Аудио интервью с шеф-поваром">
+                        <source src="{% static 'audio/chef-interview.mp3' %}" type="audio/mpeg">
+                        <source src="{% static 'audio/chef-interview.ogg' %}" type="audio/ogg">
+                        <source src="{% static 'audio/chef-interview.wav' %}" type="audio/wav">
+                        <p class="text-muted">
+                            Ваш браузер не поддерживает HTML5 аудио. 
+                            <a href="{% static 'audio/chef-interview.mp3' %}" title="Скачать аудио" download>Скачайте аудио</a> для прослушивания.
+                        </p>
+                    </audio>
+                    <div class="mt-3">
+                        <button type="button" 
+                                class="btn btn-outline-primary btn-sm me-2" 
+                                onclick="document.getElementById('chef-audio').play()"
+                                title="Воспроизвести аудио"
+                                tabindex="1">
+                            <i class="fas fa-play"></i> Воспроизвести
+                        </button>
+                        <button type="button" 
+                                class="btn btn-outline-secondary btn-sm me-2" 
+                                onclick="document.getElementById('chef-audio').pause()"
+                                title="Приостановить аудио"
+                                tabindex="2">
+                            <i class="fas fa-pause"></i> Пауза
+                        </button>
+                        <button type="button" 
+                                class="btn btn-outline-info btn-sm" 
+                                onclick="document.getElementById('chef-audio').muted = !document.getElementById('chef-audio').muted"
+                                title="Включить/выключить звук"
+                                tabindex="3">
+                            <i class="fas fa-volume-mute"></i> Звук
+                        </button>
+        </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Additional Audio Section - Company Story -->
+    <section class="row mb-5" aria-labelledby="story-audio-section-heading" id="story-audio-section">
+        <div class="col-12 text-center">
+            <h2 id="story-audio-section-heading" class="mb-4" title="История компании в аудио">История компании в аудио</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card mx-auto">
+                        <div class="card-body">
+                            <h5 class="card-title" title="Название аудио">История основания</h5>
+                            <p class="card-text text-muted" title="Описание аудио">Послушайте рассказ основателя о том, как начиналась наша пиццерия</p>
+                            <audio controls 
+                                   preload="metadata"
+                                   title="Аудио история основания пиццерии"
+                                   tabindex="0"
+                                   id="founder-audio"
+                                   aria-label="Аудио история основания пиццерии">
+                                <source src="{% static 'audio/founder-story.mp3' %}" type="audio/mpeg">
+                                <source src="{% static 'audio/founder-story.ogg' %}" type="audio/ogg">
+                                <source src="{% static 'audio/founder-story.wav' %}" type="audio/wav">
+                                <p class="text-muted">
+                                    Ваш браузер не поддерживает HTML5 аудио. 
+                                    <a href="{% static 'audio/founder-story.mp3' %}" title="Скачать аудио" download>Скачайте аудио</a> для прослушивания.
+                                </p>
+                            </audio>
+                            <div class="mt-3 audio-controls">
+                                <button type="button" 
+                                        class="btn btn-outline-primary btn-sm me-2" 
+                                        onclick="document.getElementById('founder-audio').play()"
+                                        title="Воспроизвести аудио"
+                                        tabindex="1">
+                                    <i class="fas fa-play"></i> Воспроизвести
+                                </button>
+                                <button type="button" 
+                                        class="btn btn-outline-secondary btn-sm me-2" 
+                                        onclick="document.getElementById('founder-audio').pause()"
+                                        title="Приостановить аудио"
+                                        tabindex="2">
+                                    <i class="fas fa-pause"></i> Пауза
+                                </button>
+                                <button type="button" 
+                                        class="btn btn-outline-info btn-sm" 
+                                        onclick="document.getElementById('founder-audio').muted = !document.getElementById('founder-audio').muted"
+                                        title="Включить/выключить звук"
+                                        tabindex="3">
+                                    <i class="fas fa-volume-mute"></i> Звук
+                                </button>
+                            </div>
+                </div>
+            </div>
+        </div>
+                <div class="col-md-6">
+                    <div class="card mx-auto">
+                        <div class="card-body">
+                            <h5 class="card-title" title="Название аудио">Секреты рецептов</h5>
+                            <p class="card-text text-muted" title="Описание аудио">Узнайте секреты приготовления нашей фирменной пиццы</p>
+                            <audio controls 
+                                   preload="metadata"
+                                   title="Аудио о секретах рецептов"
+                                   tabindex="0"
+                                   id="recipe-audio"
+                                   aria-label="Аудио о секретах рецептов">
+                                <source src="{% static 'audio/recipe-secrets.mp3' %}" type="audio/mpeg">
+                                <source src="{% static 'audio/recipe-secrets.ogg' %}" type="audio/ogg">
+                                <source src="{% static 'audio/recipe-secrets.wav' %}" type="audio/wav">
+                                <p class="text-muted">
+                                    Ваш браузер не поддерживает HTML5 аудио. 
+                                    <a href="{% static 'audio/recipe-secrets.mp3' %}" title="Скачать аудио" download>Скачайте аудио</a> для прослушивания.
+                                </p>
+                            </audio>
+                            <div class="mt-3 audio-controls">
+                                <button type="button" 
+                                        class="btn btn-outline-primary btn-sm me-2" 
+                                        onclick="document.getElementById('recipe-audio').play()"
+                                        title="Воспроизвести аудио"
+                                        tabindex="1">
+                                    <i class="fas fa-play"></i> Воспроизвести
+                                </button>
+                                <button type="button" 
+                                        class="btn btn-outline-secondary btn-sm me-2" 
+                                        onclick="document.getElementById('recipe-audio').pause()"
+                                        title="Приостановить аудио"
+                                        tabindex="2">
+                                    <i class="fas fa-pause"></i> Пауза
+                                </button>
+                                <button type="button" 
+                                        class="btn btn-outline-info btn-sm" 
+                                        onclick="document.getElementById('recipe-audio').muted = !document.getElementById('recipe-audio').muted"
+                                        title="Включить/выключить звук"
+                                        tabindex="3">
+                                    <i class="fas fa-volume-mute"></i> Звук
+                                </button>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </section>
+
+    <!-- Audio Playlist Section -->
+    <section class="row mb-5" aria-labelledby="playlist-section-heading" id="playlist-section">
+        <div class="col-12 text-center">
+            <h2 id="playlist-section-heading" class="mb-4" title="Аудио плейлист">Аудио плейлист</h2>
+            <div class="card mx-auto" style="max-width: 800px;">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0" title="Название плейлиста">Музыкальная атмосфера пиццерии</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3" title="Описание плейлиста">Итальянская музыка</h6>
+                            <audio controls 
+                                   preload="metadata"
+                                   title="Итальянская музыка"
+                                   tabindex="0"
+                                   id="italian-music"
+                                   aria-label="Итальянская музыка">
+                                <source src="{% static 'audio/italian-music.mp3' %}" type="audio/mpeg">
+                                <source src="{% static 'audio/italian-music.ogg' %}" type="audio/ogg">
+                                <p class="text-muted">
+                                    Ваш браузер не поддерживает HTML5 аудио. 
+                                    <a href="{% static 'audio/italian-music.mp3' %}" title="Скачать аудио" download>Скачайте аудио</a> для прослушивания.
+                                </p>
+                            </audio>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted mb-3" title="Описание плейлиста">Атмосферные звуки</h6>
+                            <audio controls 
+                                   preload="metadata"
+                                   title="Атмосферные звуки кухни"
+                                   tabindex="0"
+                                   id="kitchen-sounds"
+                                   aria-label="Атмосферные звуки кухни">
+                                <source src="{% static 'audio/kitchen-sounds.mp3' %}" type="audio/mpeg">
+                                <source src="{% static 'audio/kitchen-sounds.ogg' %}" type="audio/ogg">
+                                <p class="text-muted">
+                                    Ваш браузер не поддерживает HTML5 аудио. 
+                                    <a href="{% static 'audio/kitchen-sounds.mp3' %}" title="Скачать аудио" download>Скачайте аудио</a> для прослушивания.
+                                </p>
+                            </audio>
+                        </div>
+        </div>
+                    <div class="mt-4">
+                        <button type="button" 
+                                class="btn btn-success me-2" 
+                                onclick="playAllAudio()"
+                                title="Воспроизвести все аудио"
+                                tabindex="1">
+                            <i class="fas fa-play-circle"></i> Воспроизвести все
+                        </button>
+                        <button type="button" 
+                                class="btn btn-warning me-2" 
+                                onclick="pauseAllAudio()"
+                                title="Приостановить все аудио"
+                                tabindex="2">
+                            <i class="fas fa-pause-circle"></i> Пауза все
+                        </button>
+                        <button type="button" 
+                                class="btn btn-info" 
+                                onclick="stopAllAudio()"
+                                title="Остановить все аудио"
+                                tabindex="3">
+                            <i class="fas fa-stop-circle"></i> Остановить все
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Certificates -->
+    <section class="row mb-5" aria-labelledby="certificates-section-heading">
+        <div class="col-12">
+            <h2 id="certificates-section-heading" class="mb-4">Наши сертификаты</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 certificates-grid">
+                {% for cert in certificates %}
+                <div class="col">
+                    <article class="certificate" itemscope itemtype="https://schema.org/Permit">
+                        <!-- Certificate Seal -->
+                        <div class="certificate-seal">
+                            <i class="fas fa-certificate"></i>
+                        </div>
+                        
+                        <div class="certificate-header">
+                            <h3 class="certificate-title" itemprop="name">{{ cert.title }}</h3>
+                            <p class="certificate-subtitle">Сертификат качества</p>
+                        </div>
+                        
+                        <div class="certificate-content">
+                            <div class="certificate-number" itemprop="permitNumber">
+                                № {{ cert.number }}
+                            </div>
+                            
+                            <p><strong>Выдан:</strong> 
+                                <time datetime="{{ cert.issue_date|date:'Y-m-d' }}" itemprop="validFrom">
+                                    {{ cert.issue_date|date:"d.m.Y" }}
+                                </time>
+                            </p>
+                            
+                            {% if cert.expiry_date %}
+                            <p><strong>Действителен до:</strong>
+                                <time datetime="{{ cert.expiry_date|date:'Y-m-d' }}" itemprop="validUntil">
+                                    {{ cert.expiry_date|date:"d.m.Y" }}
+                                </time>
+                            </p>
+                            {% endif %}
+                            
+                            <p><strong>Кем выдан:</strong> <span itemprop="issuedBy">{{ cert.issuing_authority }}</span></p>
+                            
+                            <p itemprop="description">{{ cert.description }}</p>
+                        </div>
+                        
+                        <div class="certificate-footer">
+                            {% if cert.file %}
+                                <a href="{{ cert.file.url }}" class="btn btn-primary" download>
+                                    <i class="fas fa-download me-2"></i>Скачать сертификат
+                                </a>
+                            {% endif %}
+                            <p class="mt-3"><small>Данный сертификат подтверждает соответствие стандартам качества</small></p>
+                        </div>
+                    </article>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Company Info -->
+    <section class="row mb-5" aria-labelledby="info-section-heading">
+        <div class="col-12">
+            <h2 id="info-section-heading" class="mb-4">Информация о компании</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                <div class="card-body">
+                            <h3 class="h5 mb-4">Реквизиты</h3>
+                            <dl>
+                                {% if company.registration_number %}
+                                <dt>Регистрационный номер:</dt>
+                                <dd>{{ company.registration_number }}</dd>
+                                {% endif %}
+                                
+                                {% if company.tax_number %}
+                                <dt>ИНН:</dt>
+                                <dd>{{ company.tax_number }}</dd>
+                                {% endif %}
+                                
+                                {% if company.bank_details %}
+                                <dt>Банковские реквизиты:</dt>
+                                <dd>{{ company.bank_details|linebreaks }}</dd>
+                                {% endif %}
+                            </dl>
+                </div>
+            </div>
+        </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                <div class="card-body">
+                            <h3 class="h5 mb-4">Контактная информация</h3>
+                            <address itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+                                <p>
+                                    <i class="fas fa-map-marker-alt me-2"></i>
+                                    <span itemprop="streetAddress">{{ company.address }}</span>
+                                </p>
+                                <p>
+                                    <i class="fas fa-phone me-2"></i>
+                                    <a href="tel:{{ company.phone }}" itemprop="telephone">{{ company.phone }}</a>
+                                </p>
+                                <p>
+                                    <i class="fas fa-envelope me-2"></i>
+                                    <a href="mailto:{{ company.email }}" itemprop="email">{{ company.email }}</a>
+                                </p>
+                            </address>
+                            
+                            <h4 class="h6 mt-4 mb-3">Часы работы:</h4>
+                            <meta itemprop="openingHours" content="Mo-Fr {{ company.working_hours }}">
+                            <p><i class="fas fa-clock me-2"></i>{{ company.working_hours }}</p>
+                            
+                            <h4 class="h6 mt-4 mb-3">Часы доставки:</h4>
+                            <p><i class="fas fa-truck me-2"></i>{{ company.delivery_hours }}</p>
+                            
+                            {% if company.delivery_price %}
+                            <p>
+                                <i class="fas fa-tag me-2"></i>
+                                Стоимость доставки: {{ company.delivery_price }} Br
+                                {% if company.free_delivery_from %}
+                                <br>
+                                <small class="text-muted">
+                                    Бесплатная доставка при заказе от {{ company.free_delivery_from }} Br
+                                </small>
+                                {% endif %}
+                            </p>
+                            {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Social Links -->
+    {% if company.instagram or company.facebook or company.vk %}
+    <section class="row mb-5" aria-labelledby="social-section-heading">
+        <div class="col-12 text-center">
+            <h2 id="social-section-heading" class="mb-4">Мы в социальных сетях</h2>
+            <div class="social-links">
+                {% if company.instagram %}
+                <a href="{{ company.instagram }}" class="btn btn-outline-primary me-3" target="_blank" rel="noopener">
+                    <i class="fab fa-instagram me-2"></i>Instagram
+                </a>
+                {% endif %}
+                
+                {% if company.facebook %}
+                <a href="{{ company.facebook }}" class="btn btn-outline-primary me-3" target="_blank" rel="noopener">
+                    <i class="fab fa-facebook me-2"></i>Facebook
+                </a>
+                {% endif %}
+                
+                {% if company.vk %}
+                <a href="{{ company.vk }}" class="btn btn-outline-primary" target="_blank" rel="noopener">
+                    <i class="fab fa-vk me-2"></i>VK
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Map -->
+    {% if company.lat and company.lng %}
+    <section class="row" aria-labelledby="map-section-heading">
+        <div class="col-12">
+            <h2 id="map-section-heading" class="mb-4">Мы на карте</h2>
+            <div class="ratio ratio-21x9">
+                <iframe 
+                    src="https://www.google.com/maps/embed/v1/place?key={{ google_maps_api_key }}&q={{ company.lat }},{{ company.lng }}"
+                    allowfullscreen>
+                </iframe>
+    </div>
+</div>
+    </section>
+    {% endif %}
+</main>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Timeline styles */
+    .timeline {
+        position: relative;
+        padding: 20px 0;
+    }
+    
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        width: 2px;
+        height: 100%;
+        background: #007bff;
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 40px;
+    }
+    
+    .timeline-badge {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #007bff;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        z-index: 1;
+    }
+    
+    .timeline-content {
+        position: relative;
+        width: calc(50% - 50px);
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .timeline-item:nth-child(odd) .timeline-content {
+        margin-left: auto;
+    }
+    
+    .timeline-item:nth-child(even) .timeline-content {
+        margin-right: auto;
+    }
+    
+    /* Card hover effects */
+    .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    /* Social links */
+    .social-links .btn {
+        transition: all 0.2s;
+    }
+    
+    .social-links .btn:hover {
+        transform: scale(1.05);
+    }
+    
+    /* Certificate cards */
+    .certificate-card img {
+        height: 200px;
+        object-fit: contain;
+        padding: 1rem;
+    }
+    
+    /* Video and Audio Player Styles */
+    #video-container, #html5-video-container {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: transform 0.3s ease;
+    }
+    
+    #video-container:hover, #html5-video-container:hover {
+        transform: scale(1.02);
+    }
+    
+    iframe, video {
+        border: none;
+        border-radius: 10px;
+    }
+    
+    video {
+        background: #000;
+    }
+    
+    /* Video Control Buttons */
+    .video-controls, .audio-controls {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .video-controls .btn, .audio-controls .btn {
+        transition: all 0.2s ease;
+        border-radius: 20px;
+    }
+    
+    .video-controls .btn:hover, .audio-controls .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    /* Audio Player Card */
+    #audio-section .card {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-radius: 15px;
+    }
+    
+    audio {
+        width: 100%;
+        height: 50px;
+        border-radius: 25px;
+    }
+    
+    /* Video Section Headers */
+    #video-section-heading, #html5-video-section-heading, #audio-section-heading, 
+    #story-audio-section-heading, #playlist-section-heading {
+        position: relative;
+        padding-bottom: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    #video-section-heading::after, 
+    #html5-video-section-heading::after, 
+    #audio-section-heading::after,
+    #story-audio-section-heading::after,
+    #playlist-section-heading::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: linear-gradient(45deg, #007bff, #28a745);
+        border-radius: 2px;
+    }
+    
+    /* Additional Audio Cards */
+    #story-audio-section .card {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        border-radius: 15px;
+        transition: transform 0.2s ease;
+    }
+    
+    #story-audio-section .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    /* Playlist Section */
+    #playlist-section .card {
+        border: none;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        border-radius: 15px;
+    }
+    
+    #playlist-section .card-header {
+        border-radius: 15px 15px 0 0;
+        background: linear-gradient(45deg, #007bff, #0056b3) !important;
+    }
+    
+    /* Audio Controls Enhancement */
+    .audio-controls .btn {
+        transition: all 0.2s ease;
+        border-radius: 20px;
+        font-size: 0.9rem;
+    }
+    
+    .audio-controls .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    /* Playlist Controls */
+    #playlist-section .btn {
+        border-radius: 25px;
+        padding: 0.5rem 1.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    #playlist-section .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .timeline::before {
+            left: 40px;
+        }
+        
+        .timeline-badge {
+            left: 40px;
+            transform: none;
+        }
+        
+        .timeline-content {
+            width: calc(100% - 100px);
+            margin-left: 80px !important;
+        }
+        
+        .video-controls, .audio-controls {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .video-controls .btn, .audio-controls .btn {
+            width: 200px;
+            margin: 0.25rem 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate timeline items on scroll
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate__animated', 'animate__fadeIn');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.2
+    });
+    
+    timelineItems.forEach(item => {
+        observer.observe(item);
+    });
+
+    // Video and Audio Player Enhancements
+    const demoVideo = document.getElementById('demo-video');
+    const chefAudio = document.getElementById('chef-audio');
+    
+    if (demoVideo) {
+        // Video event listeners
+        demoVideo.addEventListener('play', function() {
+            console.log('Video started playing');
+            // Update play button state
+            const playBtn = document.querySelector('[onclick*="demo-video"].play()"]');
+            if (playBtn) {
+                playBtn.innerHTML = '<i class="fas fa-pause"></i> Пауза';
+                playBtn.onclick = function() { demoVideo.pause(); };
+            }
+        });
+        
+        demoVideo.addEventListener('pause', function() {
+            console.log('Video paused');
+            // Update play button state
+            const playBtn = document.querySelector('[onclick*="demo-video"].play()"]');
+            if (playBtn) {
+                playBtn.innerHTML = '<i class="fas fa-play"></i> Воспроизвести';
+                playBtn.onclick = function() { demoVideo.play(); };
+            }
+        });
+        
+        demoVideo.addEventListener('volumechange', function() {
+            const muteBtn = document.querySelector('[onclick*="demo-video"].muted"]');
+            if (muteBtn) {
+                if (demoVideo.muted) {
+                    muteBtn.innerHTML = '<i class="fas fa-volume-up"></i> Звук';
+                } else {
+                    muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i> Звук';
+                }
+            }
+        });
+        
+        // Keyboard controls
+        demoVideo.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case ' ':
+                    e.preventDefault();
+                    if (demoVideo.paused) {
+                        demoVideo.play();
+                    } else {
+                        demoVideo.pause();
+                    }
+                    break;
+                case 'm':
+                case 'M':
+                    demoVideo.muted = !demoVideo.muted;
+                    break;
+                case 'f':
+                case 'F':
+                    if (demoVideo.requestFullscreen) {
+                        demoVideo.requestFullscreen();
+                    }
+                    break;
+            }
+        });
+    }
+    
+    if (chefAudio) {
+        // Audio event listeners
+        chefAudio.addEventListener('play', function() {
+            console.log('Audio started playing');
+        });
+        
+        chefAudio.addEventListener('pause', function() {
+            console.log('Audio paused');
+        });
+        
+        chefAudio.addEventListener('volumechange', function() {
+            const muteBtn = document.querySelector('[onclick*="chef-audio"].muted"]');
+            if (muteBtn) {
+                if (chefAudio.muted) {
+                    muteBtn.innerHTML = '<i class="fas fa-volume-up"></i> Звук';
+                } else {
+                    muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i> Звук';
+                }
+            }
+        });
+    }
+    
+    // Add keyboard accessibility for video controls
+    document.addEventListener('keydown', function(e) {
+        if (e.target.tagName === 'BUTTON' && e.target.onclick) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                e.target.click();
+            }
+        }
+    });
+    
+    // Additional audio players event listeners
+    const founderAudio = document.getElementById('founder-audio');
+    const recipeAudio = document.getElementById('recipe-audio');
+    const italianMusic = document.getElementById('italian-music');
+    const kitchenSounds = document.getElementById('kitchen-sounds');
+    
+    // Add event listeners for new audio players
+    [founderAudio, recipeAudio, italianMusic, kitchenSounds].forEach(audio => {
+        if (audio) {
+            audio.addEventListener('play', function() {
+                console.log('Audio started playing:', this.id);
+            });
+            
+            audio.addEventListener('pause', function() {
+                console.log('Audio paused:', this.id);
+            });
+            
+            audio.addEventListener('volumechange', function() {
+                const muteBtn = document.querySelector(`[onclick*="${this.id}"].muted"]`);
+                if (muteBtn) {
+                    if (this.muted) {
+                        muteBtn.innerHTML = '<i class="fas fa-volume-up"></i> Звук';
+                    } else {
+                        muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i> Звук';
+                    }
+                }
+            });
+        }
+    });
+});
+
+// Global functions for playlist controls
+function playAllAudio() {
+    const audioElements = [
+        'chef-audio', 'founder-audio', 'recipe-audio', 
+        'italian-music', 'kitchen-sounds'
+    ];
+    
+    audioElements.forEach(id => {
+        const audio = document.getElementById(id);
+        if (audio) {
+            audio.play().catch(e => console.log('Could not play audio:', id, e));
+        }
+    });
+}
+
+function pauseAllAudio() {
+    const audioElements = [
+        'chef-audio', 'founder-audio', 'recipe-audio', 
+        'italian-music', 'kitchen-sounds'
+    ];
+    
+    audioElements.forEach(id => {
+        const audio = document.getElementById(id);
+        if (audio) {
+            audio.pause();
+        }
+    });
+}
+
+function stopAllAudio() {
+    const audioElements = [
+        'chef-audio', 'founder-audio', 'recipe-audio', 
+        'italian-music', 'kitchen-sounds'
+    ];
+    
+    audioElements.forEach(id => {
+        const audio = document.getElementById(id);
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    });
+}
+</script>
+{% endblock %} 

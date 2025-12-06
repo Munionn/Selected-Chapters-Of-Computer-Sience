@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Словарь терминов | Ателье{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">Словарь терминов и понятий</h1>
+        
+        <!-- Search form -->
+        <div class="mb-4">
+            <form method="get" action="{% url 'pizzeria:glossary_list' %}" class="d-flex">
+                <input type="text" name="search" class="form-control me-2" placeholder="Поиск по терминам..." value="{{ search_query }}">
+                <button type="submit" class="btn btn-primary">Поиск</button>
+            </form>
+        </div>
+        
+        <!-- Results count -->
+        <p class="text-muted mb-4">Найдено терминов: {{ terms|length }}</p>
+        
+        {% if terms %}
+            <div class="accordion" id="termAccordion">
+                {% for term in terms %}
+                <div class="accordion-item shadow-sm mb-3">
+                    <h2 class="accordion-header" id="heading{{ term.id }}">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ term.id }}" aria-expanded="false" aria-controls="collapse{{ term.id }}">
+                            <strong>{{ term.term }}</strong> 
+                            <small class="text-muted ms-auto">Добавлено: {{ term.added_date|date:"d/m/Y" }}</small>
+                        </button>
+                    </h2>
+                    <div id="collapse{{ term.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ term.id }}" data-bs-parent="#termAccordion">
+                        <div class="accordion-body">
+                            <p>{{ term.definition|linebreaks }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                {% if search_query %}
+                    По запросу "{{ search_query }}" ничего не найдено. Попробуйте изменить поисковый запрос.
+                {% else %}
+                    Словарь терминов пока пуст. Скоро здесь появятся термины и их определения.
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

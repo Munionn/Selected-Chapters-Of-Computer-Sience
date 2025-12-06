@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}FAQ - Пиццерия{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Часто задаваемые вопросы</h1>
+
+    {% if faqs %}
+        <div class="faq-container">
+            {% for faq in faqs %}
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq({{ faq.id }})">
+                        {{ faq.question }}
+                        <span class="faq-date">{{ faq.created_at|date:"d.m.Y" }}</span>
+                    </div>
+                    <div class="faq-answer" id="faq-{{ faq.id }}">
+                        {{ faq.answer|linebreaks }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            В настоящее время нет доступных вопросов и ответов.
+        </div>
+    {% endif %}
+
+    <div class="mt-5">
+        <h3>Остались вопросы?</h3>
+        <p>Если вы не нашли ответ на свой вопрос, пожалуйста, свяжитесь с нами:</p>
+        <ul class="list-unstyled">
+            <li><i class="bi bi-telephone"></i> Телефон: <a href="tel:+7XXXXXXXXXX">+7 (XXX) XXX-XX-XX</a></li>
+            <li><i class="bi bi-envelope"></i> Email: <a href="mailto:info@pizzeria.com">info@pizzeria.com</a></li>
+        </ul>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+function toggleFaq(faqId) {
+    const answer = document.getElementById('faq-' + faqId);
+    if (answer.classList.contains('show')) {
+        answer.classList.remove('show');
+    } else {
+        // Закрываем все открытые ответы
+        document.querySelectorAll('.faq-answer.show').forEach(function(item) {
+            item.classList.remove('show');
+        });
+        // Открываем выбранный ответ
+        answer.classList.add('show');
+    }
+}
+</script>
+{% endblock %}
+{% endblock %} 

@@ -1,0 +1,439 @@
+/* Parallax Pizza Section Styles */
+#pizza-parallax-top {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(180deg, #ff6b6b 0%, #ee5a6f 50%, #f093fb 100%);
+}
+
+#pizza-parallax-top img {
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    /* Try to remove white background */
+    image-rendering: -webkit-optimize-contrast;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+}
+
+/* Force remove any white borders using CSS filters and blend modes */
+#pizza-parallax-top img:not(#pizza_bg) {
+    /* If images have white background, use blend mode to hide it */
+    image-rendering: crisp-edges;
+    /* Ensure no white background shows */
+    background-color: transparent !important;
+}
+
+#pizza-parallax-top::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 200px;
+    width: 100%;
+    background: linear-gradient(to top, #fff, transparent);
+    z-index: 1000;
+}
+
+.parallax-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+#pizza_bg {
+    z-index: 1;
+    opacity: 0.3;
+    filter: blur(2px);
+    background: transparent !important;
+}
+
+#pizza_text {
+    position: relative;
+    color: white;
+    font-size: 8rem;
+    font-weight: 900;
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    letter-spacing: 0.1em;
+}
+
+#pizza_left {
+    z-index: 2;
+    left: -20%;
+    width: 40%;
+    height: auto;
+    top: 20%;
+    transform-origin: center center;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    /* Remove white background using blend mode */
+    mix-blend-mode: darken;
+    /* Alternative: use screen mode to remove white */
+    /* mix-blend-mode: screen; */
+}
+
+#pizza_right {
+    z-index: 2;
+    right: -20%;
+    width: 40%;
+    height: auto;
+    top: 20%;
+    transform-origin: center center;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    /* Remove white background using blend mode */
+    mix-blend-mode: darken;
+    /* Alternative: use screen mode to remove white */
+    /* mix-blend-mode: screen; */
+}
+
+#pizza_center {
+    z-index: 3;
+    width: 30%;
+    height: auto;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    transform-origin: center center;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    /* Remove white background using blend mode */
+    mix-blend-mode: darken;
+    /* Alternative: use screen mode to remove white */
+    /* mix-blend-mode: screen; */
+}
+
+@media (max-width: 768px) {
+    #pizza_text {
+        font-size: 4rem;
+    }
+    
+    #pizza_left,
+    #pizza_right {
+        width: 50%;
+    }
+    
+    #pizza_center {
+        width: 40%;
+    }
+}
+
+/* Range Generator Section Styles */
+.range-generator-section {
+    border-top: 3px solid #007bff;
+}
+
+.range-element-wrapper {
+    border: 2px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.range-element-wrapper:hover {
+    border-color: #007bff;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 123, 255, 0.25);
+}
+
+.range-preview {
+    width: 100%;
+    height: 2rem;
+}
+
+.range-value-display {
+    font-size: 1.2rem;
+    color: #007bff;
+}
+
+.attribute-input {
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.attribute-input:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.delete-element-btn {
+    transition: transform 0.2s ease;
+}
+
+.delete-element-btn:hover {
+    transform: scale(1.1);
+}
+
+.card-header {
+    font-weight: 600;
+}
+
+/* Library Readers Section Styles */
+.library-readers-section {
+    border-top: 3px solid #007bff;
+}
+
+.library-readers-section .nav-tabs .nav-link {
+    color: #495057;
+    font-weight: 500;
+}
+
+.library-readers-section .nav-tabs .nav-link.active {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.library-readers-section .table {
+    margin-bottom: 0;
+}
+
+.library-readers-section .table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.library-readers-section .alert-success {
+    border-left: 4px solid #28a745;
+}
+
+.library-readers-section .form-label {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.library-readers-section .form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Chart Section Styles */
+.chart-section {
+    border-top: 3px solid #28a745;
+}
+
+.chart-section .card {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+.chart-section .card:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.chart-section .table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.chart-section .table td {
+    vertical-align: middle;
+}
+
+.chart-section #mathChart {
+    max-height: 500px;
+}
+
+/* Scroll Animations Section Styles */
+.scroll-animations-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.scroll-pizza-card {
+    perspective: 1000px;
+}
+
+.scroll-pizza-item {
+    will-change: transform, opacity;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+}
+
+.scroll-pizza-item.rotating-pizza {
+    transition: none !important; /* Remove transition for smooth rotation */
+    transform-origin: center center;
+    opacity: 1 !important; /* Always visible */
+    will-change: transform;
+    backface-visibility: hidden; /* Improve performance */
+    -webkit-backface-visibility: hidden;
+}
+
+.scroll-pizza-card[data-scroll-animation] .rotating-pizza {
+    opacity: 1 !important; /* Override animation opacity for rotating pizzas */
+}
+
+.pizza-rotating-image {
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+    min-height: 350px;
+    object-fit: contain;
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.4));
+    display: block !important;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 15px;
+    transition: box-shadow 0.3s ease;
+    opacity: 1 !important; /* Always visible */
+    transform-origin: center center;
+    will-change: transform;
+    backface-visibility: hidden; /* Improve performance */
+    -webkit-backface-visibility: hidden;
+}
+
+.pizza-rotating-image:hover {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+.rotating-pizza {
+    transform-origin: center center;
+    perspective: 1000px;
+    position: relative;
+}
+
+.pizza-image-placeholder {
+    width: 100%;
+    height: 250px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.pizza-image-placeholder:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Floating pizzas */
+.floating-pizzas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.floating-pizza {
+    position: absolute;
+    animation: floatPizza 6s ease-in-out infinite;
+    filter: blur(1px);
+}
+
+@keyframes floatPizza {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-20px) rotate(90deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(180deg);
+    }
+    75% {
+        transform: translateY(-30px) rotate(270deg);
+    }
+}
+
+/* Animation base styles */
+[data-scroll-animation] {
+    opacity: 0;
+    will-change: transform, opacity;
+}
+
+/* Smooth transitions for all animated elements */
+.scroll-pizza-card,
+.card[data-scroll-animation] {
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                opacity 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Age Verification Section Styles */
+.age-verification-section {
+    position: relative;
+}
+
+.age-verification-section .card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.age-verification-section .card-header {
+    padding: 1.5rem;
+    font-size: 1.25rem;
+}
+
+.age-verification-section .form-control-lg {
+    padding: 0.75rem 1rem;
+    font-size: 1.1rem;
+}
+
+.age-verification-section .btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.age-verification-section .alert {
+    border-radius: 10px;
+    border-left: 4px solid;
+}
+
+.age-verification-section .alert-success {
+    border-left-color: #28a745;
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.age-verification-section .alert-warning {
+    border-left-color: #ffc107;
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.age-verification-section .alert-danger {
+    border-left-color: #dc3545;
+    background-color: #f8d7da;
+    color: #721c24;
+}
+

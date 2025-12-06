@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ article.title }} - Пиццерия{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'pizzeria:news_list' %}">Новости</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ article.title }}</li>
+        </ol>
+    </nav>
+
+    <article class="card shadow-sm">
+        {% if article.image %}
+        <img src="{{ article.image.url }}" class="card-img-top" alt="{{ article.title }}" style="max-height: 400px; object-fit: cover;">
+        {% endif %}
+        
+        <div class="card-body">
+            <h1 class="card-title mb-4">{{ article.title }}</h1>
+            
+            <div class="d-flex align-items-center text-muted mb-4">
+                <i class="far fa-calendar-alt me-2"></i>
+                {{ article.created_at|date:"d.m.Y" }}
+            </div>
+
+            <div class="article-content">
+                {{ article.content|linebreaks }}
+            </div>
+        </div>
+    </article>
+
+    <div class="mt-4">
+        <a href="{% url 'pizzeria:news_list' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>
+            Вернуться к списку новостей
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .article-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        column-count: 2;
+        column-gap: 2rem;
+        column-rule: 1px solid #dee2e6;
+        text-align: justify;
+    }
+    .article-content p {
+        margin-bottom: 1.5rem;
+        break-inside: avoid; /* Предотвращает разрыв параграфа между колонками */
+        page-break-inside: avoid;
+    }
+    .article-content p::first-letter {
+        font-size: 3rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        /* Убираем float для правильной работы колонок */
+        display: inline-block;
+        float: left;
+        line-height: 1;
+        margin-right: 0.1rem;
+        margin-top: 0.1rem;
+    }
+    @media (max-width: 768px) {
+        .article-content {
+            column-count: 1;
+        }
+    }
+</style>
+{% endblock %} 

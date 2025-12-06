@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Контакты - Пиццерия{% endblock %}
+
+{% block extra_head %}
+<script src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" async defer></script>
+<style>
+    #map {
+        height: 400px;
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+    .contact-info {
+        margin-bottom: 2rem;
+    }
+    .contact-info i {
+        width: 25px;
+        color: #ff6b6b;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Контакты</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="contact-info">
+                <h3>{{ company.name }}</h3>
+                <p><i class="fas fa-map-marker-alt"></i> {{ company.address }}</p>
+                <p><i class="fas fa-phone"></i> {{ company.phone }}</p>
+                <p><i class="fas fa-envelope"></i> {{ company.email }}</p>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Реквизиты компании</h5>
+                    <p class="card-text">
+                        <strong>Регистрационный номер:</strong> {{ company.registration_number }}<br>
+                        <strong>ИНН:</strong> {{ company.tax_number }}<br>
+                        <strong>Банковские реквизиты:</strong><br>
+                        {{ company.bank_details|linebreaks }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div id="map"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function initMap() {
+    // Координаты пиццерии (заменить на реальные)
+    const pizzeria = { lat: {{ company.lat }}, lng: {{ company.lng }} };
+    
+    const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 15,
+        center: pizzeria,
+    });
+    
+    const marker = new google.maps.Marker({
+        position: pizzeria,
+        map: map,
+        title: "{{ company.name }}"
+    });
+
+    const infowindow = new google.maps.InfoWindow({
+        content: `
+            <div>
+                <h5>{{ company.name }}</h5>
+                <p>{{ company.address }}</p>
+                <p>{{ company.phone }}</p>
+            </div>
+        `
+    });
+
+    marker.addListener("click", () => {
+        infowindow.open(map, marker);
+    });
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,451 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Вакансии - Пиццерия{% endblock %}
+
+{% block content %}
+<div class="vacancies-hero">
+    <div class="container py-5">
+        <div class="row mb-5">
+            <div class="col-lg-8">
+                <h1 class="display-4 mb-3">Вакансии</h1>
+                <p class="lead text-muted">Присоединяйтесь к нашей команде профессионалов и станьте частью успешного бизнеса!</p>
+            </div>
+            <div class="col-lg-4 d-flex align-items-center justify-content-lg-end mt-3 mt-lg-0">
+                <div class="filter-buttons">
+                    <button type="button" class="btn btn-lg btn-outline-primary active me-2" data-filter="all">
+                        <i class="fas fa-list me-2"></i>Все вакансии
+                    </button>
+                    <button type="button" class="btn btn-lg btn-outline-success" data-filter="active">
+                        <i class="fas fa-check-circle me-2"></i>Активные
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="vacancy-container">
+        {% for vacancy in vacancies %}
+        <div class="vacancy-item {% if not vacancy.is_active %}inactive{% endif %}">
+            <div class="vacancy-card h-100">
+                <div class="vacancy-card-body">
+                    <div class="vacancy-header">
+                        <div class="vacancy-title">
+                            <h3>{{ vacancy.title }}</h3>
+                            {% if vacancy.is_active %}
+                            <span class="status-badge active">Активна</span>
+                            {% else %}
+                            <span class="status-badge inactive">Закрыта</span>
+                            {% endif %}
+                        </div>
+                        <div class="salary-range">
+                            <i class="fas fa-money-bill-wave me-2"></i>
+                            {% if vacancy.salary_min and vacancy.salary_max %}
+                            {{ vacancy.salary_min|floatformat:0 }} - {{ vacancy.salary_max|floatformat:0 }} Br
+                            {% elif vacancy.salary_min %}
+                            от {{ vacancy.salary_min|floatformat:0 }} Br
+                            {% elif vacancy.salary_max %}
+                            до {{ vacancy.salary_max|floatformat:0 }} Br
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="vacancy-description">
+                        <p>{{ vacancy.description }}</p>
+                    </div>
+
+                    <div class="vacancy-details">
+                        <div class="requirements-section">
+                            <h4><i class="fas fa-clipboard-list me-2"></i>Требования</h4>
+                            <div class="requirements-list">
+                                {{ vacancy.requirements|linebreaks }}
+                            </div>
+                        </div>
+
+                        <div class="responsibilities-section">
+                            <h4><i class="fas fa-tasks me-2"></i>Обязанности</h4>
+                            <div class="responsibilities-list">
+                                {{ vacancy.responsibilities|linebreaks }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vacancy-footer">
+                        <div class="vacancy-meta">
+                            <span class="publication-date">
+                                <i class="far fa-calendar-alt me-2"></i>
+                                {{ vacancy.created_at|date:"d.m.Y" }}
+                            </span>
+                        </div>
+                        {% if vacancy.is_active %}
+                        <button type="button" class="btn btn-primary apply-btn" data-bs-toggle="modal" data-bs-target="#applyModal" data-vacancy-id="{{ vacancy.id }}" data-vacancy-title="{{ vacancy.title }}">
+                            <i class="fas fa-paper-plane me-2"></i>Откликнуться
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="empty-state">
+                <i class="fas fa-briefcase empty-icon"></i>
+                <h3>Нет активных вакансий</h3>
+                <p>На данный момент вакансий нет. Пожалуйста, проверьте позже.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="applyModalLabel">Отклик на вакансию</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="applicationForm" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <input type="hidden" name="vacancy_id" id="vacancyId">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">ФИО</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Телефон</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="resume" class="form-label">Резюме (PDF)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-file-pdf"></i></span>
+                            <input type="file" class="form-control" id="resume" name="resume" accept=".pdf" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cover_letter" class="form-label">Сопроводительное письмо</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-pen"></i></span>
+                            <textarea class="form-control" id="cover_letter" name="cover_letter" rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Закрыть
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i>Отправить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Анимация появления карточек
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('show');
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+
+    document.querySelectorAll('.vacancy-card').forEach(card => {
+        observer.observe(card);
+    });
+
+    // Фильтрация вакансий
+    const filterButtons = document.querySelectorAll('[data-filter]');
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const filter = this.dataset.filter;
+            const vacancies = document.querySelectorAll('.vacancy-item');
+            
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            vacancies.forEach(vacancy => {
+                if (filter === 'all' || (filter === 'active' && !vacancy.classList.contains('inactive'))) {
+                    vacancy.style.display = '';
+                } else {
+                    vacancy.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Обработка модального окна
+    const applyModal = document.getElementById('applyModal');
+    if (applyModal) {
+        applyModal.addEventListener('show.bs.modal', function(event) {
+            const button = event.relatedTarget;
+            const vacancyId = button.dataset.vacancyId;
+            const vacancyTitle = button.dataset.vacancyTitle;
+            
+            const modalTitle = this.querySelector('.modal-title');
+            const vacancyIdInput = this.querySelector('#vacancyId');
+            
+            modalTitle.textContent = `Отклик на вакансию: ${vacancyTitle}`;
+            vacancyIdInput.value = vacancyId;
+        });
+    }
+
+    // Маска для телефона
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '+' + x[1] + ' (' + x[2] + ') ' + (x[3] ? x[3] + '-' : '') + x[4];
+        });
+    }
+});
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.vacancies-hero {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    margin-top: -2rem;
+    margin-bottom: 2rem;
+}
+
+.filter-buttons .btn {
+    transition: all 0.3s ease;
+    border-width: 2px;
+}
+
+.filter-buttons .btn:hover {
+    transform: translateY(-2px);
+}
+
+.vacancy-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    overflow: hidden;
+}
+
+.vacancy-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.vacancy-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.vacancy-card-body {
+    padding: 2rem;
+}
+
+.vacancy-header {
+    margin-bottom: 1.5rem;
+}
+
+.vacancy-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.vacancy-title h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    color: #2d3436;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background-color: #e3fcef;
+    color: #00b894;
+}
+
+.status-badge.inactive {
+    background-color: #f1f3f5;
+    color: #adb5bd;
+}
+
+.salary-range {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #00b894;
+    margin-bottom: 1rem;
+}
+
+.vacancy-description {
+    color: #636e72;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.vacancy-details {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.vacancy-details h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #2d3436;
+    margin-bottom: 1rem;
+}
+
+.requirements-section,
+.responsibilities-section {
+    margin-bottom: 1.5rem;
+}
+
+.requirements-section:last-child,
+.responsibilities-section:last-child {
+    margin-bottom: 0;
+}
+
+.requirements-list,
+.responsibilities-list {
+    color: #636e72;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.vacancy-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.vacancy-meta {
+    color: #adb5bd;
+    font-size: 0.9rem;
+}
+
+.apply-btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.apply-btn:hover {
+    transform: translateY(-2px);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: #f8f9fa;
+    border-radius: 16px;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: #adb5bd;
+    margin-bottom: 1.5rem;
+}
+
+.modal-content {
+    border-radius: 16px;
+    border: none;
+}
+
+.modal-header {
+    border-bottom: none;
+    padding: 2rem 2rem 1rem;
+}
+
+.modal-body {
+    padding: 1rem 2rem;
+}
+
+.modal-footer {
+    border-top: none;
+    padding: 1rem 2rem 2rem;
+}
+
+.input-group-text {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    color: #adb5bd;
+}
+
+.form-control {
+    border: 1px solid #e9ecef;
+    padding: 0.75rem 1rem;
+}
+
+.form-control:focus {
+    border-color: #74b9ff;
+    box-shadow: 0 0 0 0.2rem rgba(116, 185, 255, 0.1);
+}
+
+.inactive {
+    opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+    .vacancy-card-body {
+        padding: 1.5rem;
+    }
+
+    .vacancy-title {
+        flex-direction: column;
+    }
+
+    .status-badge {
+        margin-top: 1rem;
+    }
+
+    .vacancy-footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .apply-btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %} 
