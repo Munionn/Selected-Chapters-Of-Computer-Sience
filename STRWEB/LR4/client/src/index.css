@@ -1,0 +1,95 @@
+:root {
+  --color-red: #dc2626;
+  --color-yellow: #fbbf24;
+  --color-red-dark: #b91c1c;
+  --color-yellow-dark: #f59e0b;
+  --color-white: #ffffff;
+  --color-cream: #fef3c7;
+  --color-dark: #1f2937;
+  --color-gray: #6b7280;
+  --color-light-gray: #f3f4f6;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-light-gray);
+  color: var(--color-dark);
+  line-height: 1.6;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation for ingredient cards */
+.ingredient-card {
+  animation: fadeIn 0.3s ease;
+}
+
+/* Hover effects */
+.pizza-card,
+.order-card,
+.item-card {
+  transition: var(--transition);
+}
+
+.pizza-card:hover,
+.order-card:hover,
+.item-card:hover {
+  animation: fadeIn 0.3s ease;
+}
+

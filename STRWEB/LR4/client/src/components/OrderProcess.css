@@ -1,0 +1,129 @@
+.order-process {
+  background: var(--color-white);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow);
+  margin-top: 2rem;
+}
+
+.order-process h3 {
+  color: var(--color-red);
+  margin-bottom: 1rem;
+}
+
+.start-process-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--color-red);
+  color: var(--color-white);
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.start-process-btn:hover {
+  background: var(--color-red-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.process-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.process-step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  transition: var(--transition);
+}
+
+.process-step.pending {
+  background: var(--color-light-gray);
+  opacity: 0.5;
+}
+
+.process-step.active {
+  background: var(--color-yellow);
+  animation: pulse 2s infinite;
+}
+
+.process-step.completed {
+  background: #10b981;
+  color: var(--color-white);
+}
+
+.step-number {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-white);
+  color: var(--color-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.process-step.completed .step-number {
+  background: var(--color-white);
+  color: #10b981;
+}
+
+.step-label {
+  flex: 1;
+  font-weight: 600;
+  font-size: 1.125rem;
+}
+
+.step-spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: var(--color-red);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.current-step {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: var(--color-cream);
+  border-radius: 0.5rem;
+  text-align: center;
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+.process-error {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #fee2e2;
+  color: var(--color-red);
+  border-radius: 0.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+

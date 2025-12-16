@@ -1,0 +1,43 @@
+.time-display {
+  background: var(--color-white);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: space-around;
+}
+
+.time-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 200px;
+}
+
+.time-label {
+  font-size: 0.875rem;
+  color: var(--color-gray);
+  font-weight: 500;
+}
+
+.time-value {
+  font-size: 1rem;
+  color: var(--color-dark);
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+@media (max-width: 768px) {
+  .time-display {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .time-item {
+    min-width: auto;
+  }
+}
+
